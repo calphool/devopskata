@@ -1,0 +1,10 @@
+{
+  "name": "web",
+  "active": true,
+  "events": [
+    "push"
+  ],
+  "config": {
+    "url": "http://EC2EXTERNALNAME:8080/github-webhook/"
+  }
+}
