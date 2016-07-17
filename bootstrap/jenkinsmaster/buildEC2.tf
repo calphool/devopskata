@@ -63,10 +63,13 @@ resource "aws_instance" "jenkinsmaster" {
             user = "ec2-user"
             private_key="/Volumes/USBKEY/devops_1.pem"
         }
+
     }
 
+}
+
+resource "nullresource" "nlr" {
     provisioner "local-exec" {
         command = "./updateGithubWebhook.sh ${aws_instance.jenkinsmaster.public_dns} ${github_reponame} ${github_user} ${github_pwd}"
     }
-
 }
