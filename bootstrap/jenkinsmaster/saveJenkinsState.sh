@@ -1,1 +1,1 @@
-tar -zcvf jenkins_state.tar.gz /var/lib/jenkins/workspace /var/lib/jenkins/jobs /var/lib/jenkins/plugins /var/lib/jenkins/users
+tar -zcvf jenkins_state.tar.gz /var/lib/jenkins/nodes /var/lib/jenkins/workspace /var/lib/jenkins/jobs /var/lib/jenkins/plugins /var/lib/jenkins/users /var/lib/jenkins/hudson.plugins* config.xml credentials.xml github-plugin-configuration.xml hudson.triggers.SCMTrigger.xml
