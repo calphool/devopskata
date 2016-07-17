@@ -1,5 +1,13 @@
 #!/usr/bin/env bash
 
+
+function installTerraform() {
+
+    if [[ -e ./terraform ]]; then
+        echo "Terraform already installed, skipping download."
+        return 0
+    fi
+
 CURRENT_TF=$(wget --quiet -O -  https://releases.hashicorp.com/terraform/ | grep -o '<a href=['"'"'"][^"'"'"']*['"'"'"]' | sed -e 's/^<a href=["'"'"']//' -e 's/["'"'"']$//' | cut -c2- | sed -n -e '/^terraform/p' | sed -e '/-rc/d' | sort | tail -n1)
 
 if [[ $CURRENT_TF == terraform* ]]; then
@@ -29,10 +37,18 @@ elif [ "$(expr substr $(uname -s) 1 10)" == "MINGW32_NT" ]; then
 fi
 
 
-    echo "Downloading: $FULLURL"
-    rm terraform*
-    rm terraform.*
-    wget -O terraform.zip $FULLURL
+    if [[ -e terraform.zip ]]; then
+        echo "terraform.zip already exists."
+    else
+        echo "Downloading: $FULLURL"
+        rm terraform* 2> /dev/null
+        rm terraform.* 2> /dev/null
+        wget --quiet -O terraform.zip $FULLURL
+    fi
 
-unzip terraform.zip
-./terraform apply
+    unzip terraform.zip
+}
+
+
+installTerraform
+terraform apply
