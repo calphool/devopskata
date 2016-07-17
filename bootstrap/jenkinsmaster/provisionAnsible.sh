@@ -20,3 +20,6 @@ sudo pip install --upgrade pip
 sudo pip install --upgrade setuptools
 sudo pip install ansible
 hash -r
+sudo mkdir -p /etc/ansible
+sudo echo 'localhost ansible_connection=local' > /etc/ansible/hosts
+sudo ansible all -m ping

@@ -45,8 +45,6 @@ resource "aws_instance" "jenkinsmaster" {
             "sudo yum -y install git",
             "sudo git clone https://github.com/calphool/devopskata.git",
             "sudo ./devopskata/bootstrap/jenkinsmaster/provisionAnsible.sh",
-            "sudo echo 'localhost ansible_connection=local' > /etc/ansible/hosts",
-            "sudo ansible all -m ping",
             "sudo adduser chicken",
             "sudo passwd -d chicken",
             "sudo chage -d 0 chicken",
