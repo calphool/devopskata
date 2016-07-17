@@ -49,7 +49,7 @@ resource "aws_instance" "jenkinsmaster" {
             "sudo passwd -d chicken",
             "sudo chage -d 0 chicken",
             "sudo usermod chicken -aG wheel",
-            "sudo cp /home/ec2-user/* /home/chicken"
+            "sudo cp -r /home/ec2-user/* /home/chicken"
         ]
         connection {
             type = "ssh"
