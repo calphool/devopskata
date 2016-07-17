@@ -36,16 +36,20 @@ checkForCredentials() {
 
 
 
-if [[ -z "$1" ]]; then
-    echo "You must provide a valid username that exists in AWS IAM"
+if [[ -z "$1" ]] || [[ -z "$2" ]] || [[ -z "$3"  ]] || [[ "$4"  ]]; then
+    echo "Format:  ./start.sh <IAM-userid> <github-repo-name> <github-userid> <github-pwd>"
     echo "You must also install a flash drive that contains a valid"
-    echo ".pem file and aws_credentials.csv file"
+    echo ".pem file and aws_credentials.csv file.  The aws_credentials.csv file must"
+    echo "contain the <IAM-userid> from AWS."
 else
     checkForCredentials
     installBrew
     installwget
     export TF_VAR_ThisNodeExternalIP=$(wget http://ipinfo.io/ip -qO -)
     export TF_VAR_ThisNodeProviderCIDR=$(whois -h whois.arin.net "$TF_VAR_ThisNodeExternalIP" | grep -F "CIDR:" | cut -c17-)
+    export TF_VAR_github_reponame=$2
+    export TF_VAR_github_user=$3
+    export TF_VAR_github_pwd=$4
     echo "External IP address: $TF_VAR_ThisNodeExternalIP"
     ./setCredentialsScript.sh "$1" "$sCredentialsPath" "$sPemPath" "$myExternalIPAddress"
     eval $(source ./setCredentialsScript.sh "$1" "$sCredentialsPath" "$sPemPath" "$TF_VAR_ThisNodeExternalIP")
