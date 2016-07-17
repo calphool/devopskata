@@ -25,4 +25,4 @@ sudo echo '[jenkinsmaster]' | sudo tee --append /etc/ansible/hosts
 sudo echo 'localhost' | sudo tee --append /etc/ansible/hosts
 sudo ansible jenkinsmaster -m ping
 sudo ansible-galaxy install geerlingguy.jenkins
-sudo ansible-playbook startJenkins.yml
+sudo ansible-playbook ~/devopskata/bootstrap/jenkinsmaster/startJenkins.yml
