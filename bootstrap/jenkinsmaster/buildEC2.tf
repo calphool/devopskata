@@ -6,20 +6,20 @@ provider "aws" {
 
 resource "aws_security_group" "ssh_sg" {
   name = "ssh-sg"
-  description = "Allow ssh" 
+  description = "Allow ssh and jenkins" 
 
   ingress {
       from_port = 22
       to_port = 22
       protocol = "TCP"
-      cidr_blocks = ["0.0.0.0/0"]
+      cidr_blocks = ["INGRESSBLOCK"]
   }
 
   ingress {
       from_port = 8080
       to_port = 8080
       protocol = "TCP"
-      cidr_blocks = ["0.0.0.0/0"]
+      cidr_blocks = ["INGRESSBLOCK"]
   }
 
   egress {

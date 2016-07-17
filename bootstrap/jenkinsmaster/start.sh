@@ -51,4 +51,10 @@ fi
 
 
 installTerraform
+
+cp buildEC2.tf buildEC2.bak
+
+sed -i '' "s/INGRESSBLOCK/$(echo $TF_VAR_ThisNodeProviderCIDR | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')/g" buildEC2.tf
 terraform apply
+mv buildEC2.bak buildEC2.tf
+
