@@ -36,7 +36,7 @@ checkForCredentials() {
 
 
 
-if [[ -z "$1" ]] || [[ -z "$2" ]] || [[ -z "$3"  ]] || [[ "$4"  ]]; then
+if [[ -z "$1" ]] || [[ -z "$2" ]] || [[ -z "$3" ]] || [[ -z "$4" ]]; then
     echo "Format:  ./start.sh <IAM-userid> <github-repo-name> <github-userid> <github-pwd>"
     echo "You must also install a flash drive that contains a valid"
     echo ".pem file and aws_credentials.csv file.  The aws_credentials.csv file must"
