@@ -15,6 +15,7 @@ sudo yum -y install python-devel
 sudo yum -y install libffi-devel
 sudo yum -y install openssl-devel
 sudo yum -y install python-pip
+sudo yum -y install nano
 sudo pip install --upgrade pip
 sudo pip install --upgrade setuptools
 sudo pip install ansible
@@ -25,5 +26,5 @@ sudo echo '[jenkinsmaster]' | sudo tee --append /etc/ansible/hosts
 sudo echo 'localhost' | sudo tee --append /etc/ansible/hosts
 sudo ansible jenkinsmaster -m ping
 sudo ansible-galaxy install geerlingguy.jenkins
+sudo tar zxf /home/ec2-user/devopskata/bootstrap/jenkinsmaster/jenkins_state.tar.gz -C /
 sudo ansible-playbook /home/ec2-user/devopskata/bootstrap/jenkinsmaster/startJenkins.yml
-sudo tar zxf /home/ec2-user/devopskata/bootstrap/jenkinsmaster/jenkins_state.tar.gz -C /var/lib/jenkins
