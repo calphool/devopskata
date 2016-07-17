@@ -8,7 +8,6 @@ sudo rpm -iUvh https://dl.fedoraproject.org/pub/epel/7/x86_64/e/$(wget --quiet -
 
 #go home
 cd ~
-sudo yum -y update
 sudo yum -y install python
 sudo yum -y install python-setuptools
 sudo yum -y install gcc
