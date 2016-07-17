@@ -40,12 +40,18 @@ resource "aws_instance" "jenkinsmaster" {
 
     provisioner "remote-exec" {
         inline = [
+            "sudo yum -y update",
+            "sudo yum -y install wget",
             "sudo yum -y install git",
+            "sudo yum -y install python-setuptools",
+            "sudo git clone https://github.com/ansible/ansible.git",
             "sudo git clone https://github.com/calphool/devopskata.git",
             "sudo adduser chicken",
-            "sudo passwd -d 0 chicken",
+            "sudo passwd -d chicken",
             "sudo chage -d 0 chicken",
-            "sudo usermod chicken -aG wheel"
+            "sudo usermod chicken -aG wheel",
+            "sudo mv /home/ec2-user/* /home/chicken",
+            "sudo userdel -r ec2-user"
         ]
         connection {
             type = "ssh"
