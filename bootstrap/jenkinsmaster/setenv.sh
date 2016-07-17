@@ -45,7 +45,7 @@ else
     installBrew
     installwget
     export TF_VAR_ThisNodeExternalIP=$(wget http://ipinfo.io/ip -qO -)
-    export TF_VAR_ThisNodeProviderCIDR=$(whois -h whois.arin.net "63.153.224.84" | grep -F "CIDR:" | cut -c17-)
+    export TF_VAR_ThisNodeProviderCIDR=$(whois -h whois.arin.net "$TF_VAR_ThisNodeExternalIP" | grep -F "CIDR:" | cut -c17-)
     echo "External IP address: $TF_VAR_ThisNodeExternalIP"
     ./setCredentialsScript.sh "$1" "$sCredentialsPath" "$sPemPath" "$myExternalIPAddress"
     eval $(source ./setCredentialsScript.sh "$1" "$sCredentialsPath" "$sPemPath" "$TF_VAR_ThisNodeExternalIP")
