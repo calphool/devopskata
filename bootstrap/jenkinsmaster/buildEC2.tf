@@ -43,15 +43,15 @@ resource "aws_instance" "jenkinsmaster" {
             "sudo yum -y update",
             "sudo yum -y install wget",
             "sudo yum -y install git",
-            "sudo yum -y install python-setuptools",
-            "sudo git clone https://github.com/ansible/ansible.git",
             "sudo git clone https://github.com/calphool/devopskata.git",
+            "sudo ./devopskata/bootstrap/jenkinsmaster/provisionAnsible.sh",
+            "sudo echo 'localhost ansible_connection=local' > /etc/ansible/hosts",
+            "sudo ansible all -m ping",
             "sudo adduser chicken",
             "sudo passwd -d chicken",
             "sudo chage -d 0 chicken",
             "sudo usermod chicken -aG wheel",
-            "sudo mv /home/ec2-user/* /home/chicken",
-            "sudo userdel -r ec2-user"
+            "sudo cp /home/ec2-user/* /home/chicken"
         ]
         connection {
             type = "ssh"
@@ -59,5 +59,7 @@ resource "aws_instance" "jenkinsmaster" {
             private_key="/Volumes/USBKEY/devops_1.pem"
         }
     }
+
+
 }
 
