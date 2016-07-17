@@ -68,7 +68,7 @@ resource "aws_instance" "jenkinsmaster" {
 
 }
 
-resource "nullresource" "nlr" {
+resource "null_resource" "nlr" {
     provisioner "local-exec" {
         command = "./updateGithubWebhook.sh ${aws_instance.jenkinsmaster.public_dns} ${github_reponame} ${github_user} ${github_pwd}"
     }
