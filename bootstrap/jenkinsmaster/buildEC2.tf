@@ -36,4 +36,22 @@ resource "aws_instance" "jenkinsmaster" {
         key_file="${connectionkeyfile}"
     }
     security_groups = ["${aws_security_group.ssh_sg.name}"]
+
+
+    provisioner "remote-exec" {
+        inline = [
+            "sudo yum -y install git",
+            "sudo git clone https://github.com/calphool/devopskata.git",
+            "sudo adduser chicken",
+            "sudo passwd -d 0 chicken",
+            "sudo chage -d 0 chicken",
+            "sudo usermod chicken -aG wheel"
+        ]
+        connection {
+            type = "ssh"
+            user = "ec2-user"
+            private_key="/Volumes/USBKEY/devops_1.pem"
+        }
+    }
 }
+
