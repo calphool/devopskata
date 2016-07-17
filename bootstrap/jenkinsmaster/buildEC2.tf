@@ -19,7 +19,7 @@ resource "aws_security_group" "ssh_sg" {
       from_port = 8080
       to_port = 8080
       protocol = "TCP"
-      cidr_blocks = ["INGRESSBLOCK"]
+      cidr_blocks = ["INGRESSBLOCK","192.30.252.0/22"]
   }
 
   egress {
