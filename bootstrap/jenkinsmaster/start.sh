@@ -60,3 +60,4 @@ sed -i '' "s/GITHUB_USER/$(echo $TF_VAR_github_user | sed -e 's/\\/\\\\/g; s/\//
 sed -i '' "s/GITHUB_PWD/$(echo $TF_VAR_github_pwd | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')/g" buildEC2.tf
 terraform apply
 mv buildEC2.bak buildEC2.tf
+

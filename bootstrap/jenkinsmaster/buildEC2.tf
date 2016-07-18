@@ -56,20 +56,20 @@ resource "aws_instance" "jenkinsmaster" {
             "sudo passwd -d chicken",
             "sudo chage -d 0 chicken",
             "sudo usermod chicken -aG wheel",
-            "sudo cp -r /home/ec2-user/* /home/chicken"
+            "sudo cp -r /home/ec2-user/* /home/chicken",
+            "sudo -u jenkins bash < ssh-keygen -q -f /var/lib/jenkins/.ssh/id_rsa -N '' ; eval \"$(ssh-agent -s)\" ; ssh-add /var/lib/jenkins/.ssh/id_rsa ; echo /var/lib/jenkins/.ssh/id_rsa.pub",
         ]
         connection {
             type = "ssh"
             user = "ec2-user"
             private_key="/Volumes/USBKEY/devops_1.pem"
         }
-
     }
-
 }
 
 resource "null_resource" "nlr" {
-    provisioner "local-exec" {          
+    provisioner "local-exec" {
+        /* this is part of the problem, but there's more to getting this working than this */          
         command = "./updateGithubWebhook.sh ${aws_instance.jenkinsmaster.public_dns} GITHUB_REPONAME GITHUB_USER GITHUB_PWD"
     }
 }
