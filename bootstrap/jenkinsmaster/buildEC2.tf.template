@@ -32,7 +32,7 @@ resource "aws_security_group" "ssh_sg" {
 
 
 resource "aws_instance" "jenkinsmaster" {
-    ami = "ami-e6c23b87"
+    ami = "ami-43c43d22"
     instance_type = "t2.micro"
     key_name="devops_1"
     tags {
