@@ -40,7 +40,7 @@ resource "aws_instance" "jenkinsmaster" {
     }
     connection {
         user="${connectionuser}"
-        key_file="${connectionkeyfile}"
+        key_file="CONNECTIONKEYFILE"
     }
     security_groups = ["${aws_security_group.ssh_sg.name}"]
 
@@ -57,12 +57,11 @@ resource "aws_instance" "jenkinsmaster" {
             "sudo chage -d 0 chicken",
             "sudo usermod chicken -aG wheel",
             "sudo cp -r /home/ec2-user/* /home/chicken",
-            "sudo -u jenkins bash < ssh-keygen -q -f /var/lib/jenkins/.ssh/id_rsa -N '' ; eval \"$(ssh-agent -s)\" ; ssh-add /var/lib/jenkins/.ssh/id_rsa ; echo /var/lib/jenkins/.ssh/id_rsa.pub",
         ]
         connection {
             type = "ssh"
             user = "ec2-user"
-            private_key="/Volumes/USBKEY/devops_1.pem"
+            private_key="CONNECTIONKEYFILE"
         }
     }
 }
