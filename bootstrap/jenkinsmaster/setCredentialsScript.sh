@@ -2,6 +2,7 @@
 echo export TF_VAR_connectionkeyfile="$3"
 echo export TF_VAR_connectionuser="$1"
 
+
 function setCredentialsFor() {
         userName=\"$1\"
         filename="$2"
@@ -9,9 +10,11 @@ function setCredentialsFor() {
 	while IFS='' read -r line || [[ -n "$line" ]]; do
                 if [[ $line == $userName* ]] ; then
                     IFS=', ' read -r -a lineArray <<< "$line"
-                    echo export AWS_ACCESS_KEY_ID="${lineArray[1]}"
-                    echo export AWS_SECRET_ACCESS_KEY="${lineArray[2]}"
-                    echo export AWS_DEFAULT_REGION="ap-northeast-1"
+                    #echo export AWS_ACCESS_KEY_ID=\"${lineArray[1]}\"
+                    #echo " "
+                    #echo export AWS_SECRET_ACCESS_KEY=\"${lineArray[2]}\"
+                    #echo " "
+                    #echo export AWS_DEFAULT_REGION=\"ap-northeast-1\"
                     return 0                   
                 fi
 	done < "$filename"
@@ -23,5 +26,5 @@ function setCredentialsFor() {
         return 0
 }
 
-
-setCredentialsFor "$1" "$2" 
+#don't use this method for setting credentials.  Use the ~/.aws/ approach
+#setCredentialsFor "$1" "$2" 
