@@ -52,12 +52,18 @@ fi
 
 installTerraform
 
-cp buildEC2.tf buildEC2.bak
+cp buildEC2.tf.template buildEC2.tf
 
+echo " "
+read -s  -p Github_Password: passw
+echo " "
+read -p Github_Userid: ghUser
+echo " "
+read -p Github_Repo_Name: ghRepoName
+echo " "
 sed -i '' "s/INGRESSBLOCK/$(echo $TF_VAR_ThisNodeProviderCIDR | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')/g" buildEC2.tf
-sed -i '' "s/GITHUB_REPONAME/$(echo $TF_VAR_github_reponame | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')/g" buildEC2.tf
-sed -i '' "s/GITHUB_USER/$(echo $TF_VAR_github_user | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')/g" buildEC2.tf
-sed -i '' "s/GITHUB_PWD/$(echo $TF_VAR_github_pwd | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')/g" buildEC2.tf
+sed -i '' "s/GITHUB_REPONAME/$(echo $ghRepoName | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')/g" buildEC2.tf
+sed -i '' "s/GITHUB_USER/$(echo $ghUser | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')/g" buildEC2.tf
+sed -i '' "s/GITHUB_PWD/$(echo $passw | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')/g" buildEC2.tf
 terraform apply
-mv buildEC2.bak buildEC2.tf
-
+rm buildEC2.tf

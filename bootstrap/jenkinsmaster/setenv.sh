@@ -8,6 +8,14 @@ installwget() {
 brew install wget
 }
 
+installPython() {
+brew install python
+}
+
+installAWSCli() {
+pip install -q awscli
+}
+
 checkForCredentials() {
     echo "Checking for credentials..."
     sCredentialsPath=""
@@ -34,23 +42,40 @@ checkForCredentials() {
     echo "Located AWS credentials and PEM file"
 }
 
+validateAWSSetup() {
+    if [[ -z "$AWS_CONFIG_FILE" ]] ; then 
+        echo "AWS_CONFIG_FILE not set."
+        exit 3
+    fi
+
+    if [[ -z "$AWS_DEFAULT_REGION" ]] ; then
+        echo "AWS_DEFAULT_REGION not set."
+        exit 4
+    fi
+
+    if [[ -z "$AWS_PROFILE" ]] ; then
+        expt "AWS_PROFILE not set."
+        exit 5
+    fi
+}
 
 
-if [[ -z "$1" ]] || [[ -z "$2" ]] || [[ -z "$3" ]] || [[ -z "$4" ]]; then
-    echo "Format:  ./start.sh <IAM-userid> <github-repo-name> <github-userid> <github-pwd>"
-    echo "You must also install a flash drive that contains a valid"
-    echo ".pem file and aws_credentials.csv file.  The aws_credentials.csv file must"
-    echo "contain the <IAM-userid> from AWS."
+
+if [[ -z "$1" ]] || [[ -z "$2" ]] || [[ -z "$3" ]] ; then
+    echo "Format:  source ./setenv.sh <github-repo-name> <github-userid> <pem file path>"
 else
-    checkForCredentials
+#   checkForCredentials
+    validateAWSSetup
     installBrew
     installwget
+    installPython
+    installAWSCli
     export TF_VAR_ThisNodeExternalIP=$(wget http://ipinfo.io/ip -qO -)
     export TF_VAR_ThisNodeProviderCIDR=$(whois -h whois.arin.net "$TF_VAR_ThisNodeExternalIP" | grep -F "CIDR:" | cut -c17-)
-    export TF_VAR_github_reponame=$2
-    export TF_VAR_github_user=$3
-    export TF_VAR_github_pwd=$4
+    export TF_VAR_github_reponame=$1
+    export TF_VAR_github_user=$2
+    export TF_LOG=TRACE
+    export TF_LOG_PATH=./tflog.txt
     echo "External IP address: $TF_VAR_ThisNodeExternalIP"
-    ./setCredentialsScript.sh "$1" "$sCredentialsPath" "$sPemPath" "$myExternalIPAddress"
-    eval $(source ./setCredentialsScript.sh "$1" "$sCredentialsPath" "$sPemPath" "$TF_VAR_ThisNodeExternalIP")
+    eval $(source ./setCredentialsScript.sh "$1" "$sCredentialsPath" "$3" "$TF_VAR_ThisNodeExternalIP")
 fi
