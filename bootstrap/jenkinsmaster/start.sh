@@ -1,9 +1,16 @@
 #!/usr/bin/env bash
 
 
-function installTerraform() {
+pathAdd() {
+    if [ -d "$1" ] && [[ ":$PATH:" != *":$1:"* ]]; then
+        PATH="${PATH:+"$PATH:"}$1"
+    fi
+}
 
-    if [[ -e ./terraform ]]; then
+function installTerraform() {
+    pathAdd ./tf
+
+    if [[ -e ./tf/terraform ]]; then
         echo "Terraform already installed, skipping download."
         return 0
     fi
@@ -37,33 +44,37 @@ elif [ "$(expr substr $(uname -s) 1 10)" == "MINGW32_NT" ]; then
 fi
 
 
-    if [[ -e terraform.zip ]]; then
+    if [[ -e ./tf/terraform.zip ]]; then
         echo "terraform.zip already exists."
     else
+        mkdir -p ./tf
         echo "Downloading: $FULLURL"
-        rm terraform* 2> /dev/null
-        rm terraform.* 2> /dev/null
-        wget --quiet -O terraform.zip $FULLURL
+        rm ./tf/terraform* 2> /dev/null
+        rm ./tf/terraform.* 2> /dev/null
+        wget --quiet -O ./tf/terraform.zip $FULLURL
     fi
 
-    unzip terraform.zip
+    unzip ./tf/terraform.zip -d ./tf
 }
 
 
-installTerraform
 
 cp buildEC2.tf.template buildEC2.tf
 
 echo " "
+read  -p Github_Userid: ghUser
 read -s  -p Github_Password: passw
 echo " "
-read -p Github_Userid: ghUser
-echo " "
-read -p Github_Repo_Name: ghRepoName
+read  -p Github_Repo_Name: ghRepoName
+read  -p PEM_File_Path: pfPath
 echo " "
 sed -i '' "s/INGRESSBLOCK/$(echo $TF_VAR_ThisNodeProviderCIDR | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')/g" buildEC2.tf
 sed -i '' "s/GITHUB_REPONAME/$(echo $ghRepoName | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')/g" buildEC2.tf
 sed -i '' "s/GITHUB_USER/$(echo $ghUser | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')/g" buildEC2.tf
 sed -i '' "s/GITHUB_PWD/$(echo $passw | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')/g" buildEC2.tf
+sed -i '' "s/CONNECTIONKEYFILE/$(echo $pfPath | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')/g" buildEC2.tf
+
+installTerraform
+pathAdd ./tf
 terraform apply
 rm buildEC2.tf
