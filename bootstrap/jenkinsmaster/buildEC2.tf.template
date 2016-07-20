@@ -53,7 +53,7 @@ resource "aws_instance" "jenkinsmaster" {
     }
     connection {
         user="${connectionuser}"
-        key_file="CONNECTIONKEYFILE"
+        private_key="CONNECTIONKEYFILE"
     }
     security_groups = ["${aws_security_group.ssh_sg.name}"]
 
@@ -104,9 +104,9 @@ resource "null_resource" "nlr3" {
 
     provisioner "file" {
         connection {
-            type = "ssh"
             user = "ec2-user"
             private_key="CONNECTIONKEYFILE"
+            host = "${aws_instance.jenkinsmaster.public_dns}"
         }
         source = "./id_rsa"
         destination = "/home/ec2-user/id_rsa"
@@ -128,9 +128,9 @@ resource "null_resource" "nlr4" {
              "sudo chown jenkins:jenkin /var/lib/jenkins/.ssh/id_rsa"
         ]
         connection {
-            type = "ssh"
             user = "ec2-user"
             private_key="CONNECTIONKEYFILE"
+            host = "${aws_instance.jenkinsmaster.public_dns}"
         }
     }
 }

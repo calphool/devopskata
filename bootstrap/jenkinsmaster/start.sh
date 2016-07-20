@@ -73,8 +73,10 @@ sed -i '' "s/GITHUB_REPONAME/$(echo $ghRepoName | sed -e 's/\\/\\\\/g; s/\//\\\/
 sed -i '' "s/GITHUB_USER/$(echo $ghUser | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')/g" buildEC2.tf
 sed -i '' "s/GITHUB_PWD/$(echo $passw | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')/g" buildEC2.tf
 sed -i '' "s/CONNECTIONKEYFILE/$(echo $pfPath | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')/g" buildEC2.tf
-
+cp buildEC2.tf buildEC2.tf.bak
 installTerraform
 pathAdd ./tf
+rm ./id_rsa 2> /dev/null
+rm ./id_rsa.pub 2> /dev/null
 terraform apply
 rm buildEC2.tf
