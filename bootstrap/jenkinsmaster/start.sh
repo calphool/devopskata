@@ -68,12 +68,12 @@ echo " "
 read  -p Github_Repo_Name: ghRepoName
 read  -p PEM_File_Path: pfPath
 
-if [[ -e $pfPath ]] ; then
+if [[ ! -f $pfPath ]] ; then
     echo $pfPath does not exist.  Rerun this command with a valid PEM file path.
     exit 1
 fi
 
-repoExists = *(curl -s -u "$ghUser:$passw" -X GET https://api.github.com/users/$ghUser/repos | python -mjson.tool | grep -E \"name.*$ghRepoName\")
+repoExists=$(curl -s -u "$ghUser:$passw" -X GET https://api.github.com/users/$ghUser/repos | python -mjson.tool | grep -E \"name.*$ghRepoName\")
 
 if [[ -z $repoExists ]] ; then
     echo $ghRepoName cannot be found.  Check your repo name, user id, and password
