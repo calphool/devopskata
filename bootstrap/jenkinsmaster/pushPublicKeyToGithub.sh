@@ -5,4 +5,4 @@ str1='{"title": "ec2key", "key": "'
 str2=$keydata'", "read_only": true }'
 str3=$str1$str2
 str4=\'$str3\'
-curl -X POST -u "$2:$3" $str4
+curl -X POST -u "$2:$3" https://api.github.com/repos/calphool/devopskata_ci_repo/keys --data $str4
