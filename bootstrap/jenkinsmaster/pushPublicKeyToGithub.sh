@@ -1,7 +1,7 @@
 echo Code that pushes ./id_rsa.pub to $1, using $2:***** goes here...
 
 keydata=$(cat ./id_rsa.pub)
-str1='{"title": "ec2key", "key": "'
+str1='{"title": "key-$4", "key": "'
 str2=$keydata'", "read_only": true }'
 str3=$str1$str2
 echo $str3 > tmp.txt

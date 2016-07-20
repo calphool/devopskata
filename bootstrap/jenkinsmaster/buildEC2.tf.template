@@ -146,6 +146,6 @@ resource "null_resource" "nlr5" {
     depends_on=["null_resource.nlr4"]
 
     provisioner "local-exec" {
-        command = "./pushPublicKeyToGithub.sh GITHUB_REPONAME GITHUB_USER GITHUB_PWD"
+        command = "./pushPublicKeyToGithub.sh GITHUB_REPONAME GITHUB_USER GITHUB_PWD ${aws_instance.jenkinsmaster.public_dns}"
     }
 }
