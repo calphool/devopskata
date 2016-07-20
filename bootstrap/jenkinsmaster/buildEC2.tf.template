@@ -1,9 +1,20 @@
+/*
+*  Provision into AWS cloud, using environment variables for config -- see https://aws.amazon.com/cli/ for
+*  directions on setting up AWS_CONFIG_FILE, AWS_DEFAULT_REGION, and AWS_PROFILE  (aws configure)
+*
+*/
 provider "aws" {
     region="ap-northeast-1"
 }
 
 
 
+/*
+*
+* Heavy lifting here... set up ingress and egress values (note that an ingress rule for github.com is included)
+* Launch instance based on given AMI, yum update it, make sure it has wget and git, clone the project,
+* put ansible on the server, use ansible to install jenkins via a public ansible role in galaxy
+*/
 resource "aws_security_group" "ssh_sg" {
   name = "ssh-sg"
   description = "Allow ssh and jenkins" 
@@ -30,7 +41,9 @@ resource "aws_security_group" "ssh_sg" {
   }
 }
 
-
+/*
+* run scripts
+*/
 resource "aws_instance" "jenkinsmaster" {
     ami = "ami-43c43d22"
     instance_type = "t2.micro"
@@ -52,11 +65,6 @@ resource "aws_instance" "jenkinsmaster" {
             "sudo yum -y install git",
             "sudo git clone https://github.com/calphool/devopskata.git",
             "sudo ./devopskata/bootstrap/jenkinsmaster/provisionAnsible.sh",
-            "sudo adduser chicken",
-            "sudo passwd -d chicken",
-            "sudo chage -d 0 chicken",
-            "sudo usermod chicken -aG wheel",
-            "sudo cp -r /home/ec2-user/* /home/chicken",
         ]
         connection {
             type = "ssh"
@@ -66,9 +74,75 @@ resource "aws_instance" "jenkinsmaster" {
     }
 }
 
-resource "null_resource" "nlr" {
-    provisioner "local-exec" {
-        /* this is part of the problem, but there's more to getting this working than this */          
+
+/*
+* link up Github webhook to this instance of jenkins
+*/
+resource "null_resource" "nlr1" {
+    provisioner "local-exec" {         
         command = "./updateGithubWebhook.sh ${aws_instance.jenkinsmaster.public_dns} GITHUB_REPONAME GITHUB_USER GITHUB_PWD"
+    }
+}
+
+
+/*
+* Generate a public/private key pair locally
+*/
+resource "null_resource" "nlr2" {
+    depends_on=["null_resource.nlr1"]
+
+    provisioner "local-exec" {
+        command = "ssh-keygen -f ./id_rsa -N '' -t rsa -b 4096 -C 'jrounceville@hotmail.com' ; ssh-keygen -y -f ./id_rsa > id_rsa.pub"
+    }
+}
+
+/*
+* copy the private key to the jenkins server
+*/
+resource "null_resource" "nlr3" {
+    depends_on=["null_resource.nlr2"]
+
+    provisioner "file" {
+        connection {
+            type = "ssh"
+            user = "ec2-user"
+            private_key="CONNECTIONKEYFILE"
+        }
+        source = "./id_rsa"
+        destination = "/home/ec2-user/id_rsa"
+    }
+
+}
+
+
+/*
+* put the private key in jenkins' key store and change its ownership
+*/
+resource "null_resource" "nlr4" {
+    depends_on=["null_resource.nlr3"]
+
+    provisioner "remote-exec" {
+        inline = [
+             "sudo cp /home/ec2-user/id_rsa /var/lib/jenkins/.ssh/id_rsa",
+             "sudo chmod 600 /var/lib/jenkins/.ssh/id_rsa",
+             "sudo chown jenkins:jenkin /var/lib/jenkins/.ssh/id_rsa"
+        ]
+        connection {
+            type = "ssh"
+            user = "ec2-user"
+            private_key="CONNECTIONKEYFILE"
+        }
+    }
+}
+
+
+/*
+* push the public key to jenkins' delivery keys
+*/
+resource "null_resource" "nlr5" {
+    depends_on=["null_resource.nlr4"]
+
+    provisioner "local-exec" {
+        command = "./pushPublicKeyToGithub.sh GITHUB_REPONAME GITHUB_USER GITHUB_PWD"
     }
 }
