@@ -66,6 +66,11 @@ resource "aws_instance" "jenkinsmaster" {
             private_key="CONNECTIONKEYFILE"
         }
     }
+
+    ebs_block_device = {
+        device_name="/dev/sdh"
+        snapshot_id="snap-18b60cf6"
+    }
 }
 
 

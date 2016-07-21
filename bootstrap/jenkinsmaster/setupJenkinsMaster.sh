@@ -1,5 +1,7 @@
 #!/bin/sh
 
+sudo mkdir /perm
+sudo mount /dev/xvdh /perm
 sudo yum -y update
 sudo yum -y install wget
 sudo yum -y install git
