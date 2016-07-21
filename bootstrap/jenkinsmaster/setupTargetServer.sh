@@ -24,5 +24,7 @@ sudo echo 'localhost ansible_connection=local' | sudo tee --append /etc/ansible/
 sudo echo '[targetserver]' | sudo tee --append /etc/ansible/hosts
 sudo echo 'localhost' | sudo tee --append /etc/ansible/hosts
 sudo ansible buildserver -m ping
+sudo sysctl -w net.ipv6.conf.all.disable_ipv6=1
+sudo sysctl -w net.ipv6.conf.default.disable_ipv6=1
 sudo ansible-galaxy install devops.tomcat7
 sudo ansible-playbook /home/ec2-user/devopskata/bootstrap/buildserver/startTomcat.yml
