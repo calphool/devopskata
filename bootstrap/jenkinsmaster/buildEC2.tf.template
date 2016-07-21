@@ -71,6 +71,7 @@ resource "aws_instance" "jenkinsmaster" {
         device_name="/dev/xvdh"
         snapshot_id="snap-18b60cf6"
         delete_on_termination="true"
+        volume_type="gp2"
     }
 }
 
