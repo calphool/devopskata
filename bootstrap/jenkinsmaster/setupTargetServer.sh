@@ -6,6 +6,7 @@ sudo yum -y install git
 sudo yum -y install java
 java -version
 cd ~
+sudo git clone https://github.com/calphool/devopskata.git
 sudo yum -y install python
 sudo yum -y install python-setuptools
 sudo yum -y install gcc

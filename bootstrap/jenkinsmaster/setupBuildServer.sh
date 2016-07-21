@@ -11,3 +11,5 @@ sudo yum -y install java-1.8.0-openjdk-devel.x86_64
 mvn --version
 java -version
 javac -version
+cd ~
+sudo git clone https://github.com/calphool/devopskata.git
