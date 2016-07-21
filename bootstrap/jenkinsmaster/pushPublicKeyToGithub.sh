@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 echo Code that pushes ./id_rsa.pub to $1, using $2:***** goes here...
 
 keydata=$(cat ./id_rsa.pub)

@@ -61,12 +61,42 @@ fi
 
 cp buildEC2.tf.template buildEC2.tf
 
+# see if we have a user from a previous run for default
+olduser=`cat startuser.prop 2> /dev/null`
+
 echo " "
-read  -p Github_Userid: ghUser
+read  -p Github_Userid[$olduser]: ghUser
+
+# if they just hit enter, set the value to the old user 
+if [[ -z "$ghUser" ]]; then
+    ghUser=$olduser
+else
+    echo $ghUser > startuser.prop
+fi 
+
 read -s  -p Github_Password: passw
+
 echo " "
-read  -p Github_Repo_Name: ghRepoName
+
+oldrepo=`cat startrepo.prop 2> /dev/null`
+
+read  -p Github_Repo_Name[$oldrepo]: ghRepoName
+
+if [[ -z "$ghRepoName" ]]; then
+    ghRepoName=$oldrepo
+else
+    echo $ghRepoName > startrepo.prop
+fi
+
+oldpem=`cat startpem.prop 2> /dev/null`
+
 read  -p PEM_File_Path: pfPath
+
+if [[ -z "$pfPath" ]]; then
+    pgPath=$oldpem
+else
+    echo $pfPath > startpem.prop
+fi
 
 if [[ ! -f $pfPath ]] ; then
     echo $pfPath does not exist.  Rerun this command with a valid PEM file path.
