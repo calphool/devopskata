@@ -17,7 +17,7 @@ provider "aws" {
 */
 resource "aws_security_group" "ssh_sg" {
   name = "ssh-sg"
-  description = "Allow ssh and jenkins" 
+  description = "Allow ssh and jenkins port" 
 
   ingress {
       from_port = 22
@@ -42,7 +42,7 @@ resource "aws_security_group" "ssh_sg" {
 }
 
 /*
-* run scripts
+* run jenkins provisioning scripts
 */
 resource "aws_instance" "jenkinsmaster" {
     ami = "ami-43c43d22"
@@ -60,11 +60,7 @@ resource "aws_instance" "jenkinsmaster" {
 
     provisioner "remote-exec" {
         inline = [
-            "sudo yum -y update",
-            "sudo yum -y install wget",
-            "sudo yum -y install git",
-            "sudo git clone https://github.com/calphool/devopskata.git",
-            "sudo ./devopskata/bootstrap/jenkinsmaster/provisionAnsible.sh",
+            "./setupJenkinsMaster.sh",
         ]
         connection {
             type = "ssh"
@@ -73,6 +69,94 @@ resource "aws_instance" "jenkinsmaster" {
         }
     }
 }
+
+
+resource "aws_security_group" "ssh_and_8080" {
+  name = "ssh-8080"
+  description = "Allow ssh and 8080"
+
+  ingress {
+      from_port = 22
+      to_port = 22
+      protocol = "TCP"
+      cidr_blocks = ["INGRESSBLOCK"]
+  }
+
+  ingress {
+      from_port = 8080
+      to_port = 8080
+      protocol = "TCP"
+      cidr_blocks = ["INGRESSBLOCK"]
+  }
+
+  egress {
+      from_port = 0
+      to_port = 0
+      protocol = -1
+      cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+
+/*
+* Bring up build server
+*/
+resource "aws_instance" "buildserver" {
+    ami = "ami-b2877fd3"
+    instance_type = "t2.micro"
+    key_name="devops_1"
+    tags {
+        name = "BuildServer"
+    }
+    connection {
+        user="${connectionuser}"
+        private_key="CONNECTIONKEYFILE"
+    }
+    security_groups = ["${aws_security_group.ssh_and_8080.name}"]
+
+
+    provisioner "remote-exec" {
+        inline = [
+            "./setupBuildServer.sh",
+        ]
+        connection {
+            type = "ssh"
+            user = "ec2-user"
+            private_key="CONNECTIONKEYFILE"
+        }
+    }
+}
+
+
+/*
+* Bring up target server
+*/
+resource "aws_instance" "targetserver" {
+    ami = "ami-b2877fd3"
+    instance_type = "t2.micro"
+    key_name="devops_1"
+    tags {
+        name = "TargetServer"
+    }
+    connection {
+        user="${connectionuser}"
+        private_key="CONNECTIONKEYFILE"
+    }
+    security_groups = ["${aws_security_group.ssh_and_8080.name}"]
+
+
+    provisioner "remote-exec" {
+        inline = [
+            "./setupTargetServer.sh"
+        ]
+        connection {
+            type = "ssh"
+            user = "ec2-user"
+            private_key="CONNECTIONKEYFILE"
+        }
+    }
+}
+
 
 
 /*
@@ -123,12 +207,7 @@ resource "null_resource" "nlr4" {
 
     provisioner "remote-exec" {
         inline = [
-             "sudo mkdir -p /var/lib/jenkins/.ssh",
-             "sudo chmod 700 /var/lib/jenkins/.ssh",
-             "sudo chown jenkins:jenkins /var/lib/jenkins/.ssh",
-             "sudo mv /home/ec2-user/id_rsa /var/lib/jenkins/.ssh/id_rsa",
-             "sudo chmod 600 /var/lib/jenkins/.ssh/id_rsa",
-             "sudo chown jenkins:jenkins /var/lib/jenkins/.ssh/id_rsa"
+             "./pushPrivateKeyToJenkins.sh"
         ]
         connection {
             user = "ec2-user"

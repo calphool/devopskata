@@ -1,0 +1,6 @@
+buildEC2.tf.bak
+*.prop
+*.tfstate
+*.tfstate.backup
+tf/
+tflog.txt
