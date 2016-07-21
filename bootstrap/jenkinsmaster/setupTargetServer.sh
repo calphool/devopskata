@@ -21,7 +21,7 @@ sudo pip install ansible
 hash -r
 sudo mkdir -p /etc/ansible
 sudo echo 'localhost ansible_connection=local' | sudo tee --append /etc/ansible/hosts
-sudo echo '[buildserver]' | sudo tee --append /etc/ansible/hosts
+sudo echo '[targetserver]' | sudo tee --append /etc/ansible/hosts
 sudo echo 'localhost' | sudo tee --append /etc/ansible/hosts
 sudo ansible buildserver -m ping
 sudo ansible-galaxy install osct.tomcat-8
