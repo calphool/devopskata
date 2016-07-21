@@ -68,8 +68,9 @@ resource "aws_instance" "jenkinsmaster" {
     }
 
     ebs_block_device = {
-        device_name="/dev/sdh"
+        device_name="/dev/xvdh"
         snapshot_id="snap-18b60cf6"
+        delete_on_termination="true"
     }
 }
 
