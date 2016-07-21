@@ -21,10 +21,10 @@ basic inquiry into your AWS environment before proceding.
 ### Step 2.
 ---
 Clone this repo locally.  From inside the bootstrap/jenkinsmaster/ folder, run `source setenv.sh`.  Once this is done,
-run `./start.sh`.  The script will ask you for four pieces of information:  your github user id, your github password, 
-the name of a github repo you want to monitor, and the path to your .pem file from Step 1.
+run `./start.sh`.  The script will ask you for enough information to make the connection between the Jenkins server 
+it provisions and a github repo you want to monitor for commits.
 
-./start.sh will begin installing what it needs (terraform), and then it will start a provisioning process that 
+./start.sh will then begin installing what it needs (terraform), and will start a provisioning process that 
 builds three EC2 instances.
 
 
