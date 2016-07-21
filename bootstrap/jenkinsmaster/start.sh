@@ -58,7 +58,7 @@ fi
 }
 
 
-
+rm *.tf 2> /dev/null
 cp buildEC2.tf.template buildEC2.tf
 
 # see if we have a user from a previous run for default
