@@ -23,5 +23,5 @@ sudo echo 'localhost ansible_connection=local' | sudo tee --append /etc/ansible/
 sudo echo '[buildserver]' | sudo tee --append /etc/ansible/hosts
 sudo echo 'localhost' | sudo tee --append /etc/ansible/hosts
 sudo ansible buildserver -m ping
-ansible-galaxy install osct.tomcat-8
+sudo ansible-galaxy install osct.tomcat-8
 sudo ansible-playbook /home/ec2-user/devopskata/bootstrap/buildserver/startTomcat.yml
