@@ -16,6 +16,9 @@ sudo yum -y install libffi-devel
 sudo yum -y install openssl-devel
 sudo yum -y install python-pip
 sudo yum -y install nano
+sudo yum -y install ruby
+gem install cucumber
+gem install selenium
 sudo pip install --upgrade pip
 sudo pip install --upgrade setuptools
 sudo pip install ansible
