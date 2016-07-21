@@ -1,0 +1,13 @@
+#!/bin/sh
+
+sudo yum -y update
+sudo yum -y install wget
+sudo yum -y install git
+sudo wget http://repos.fedorapeople.org/repos/dchen/apache-maven/epel-apache-maven.repo -O /etc/yum.repos.d/epel-apache-maven.repo
+sudo sed -i s/\$releasever/6/g /etc/yum.repos.d/epel-apache-maven.repo
+sudo yum install -y apache-maven
+sudo yum -y install java
+sudo yum -y install java-1.8.0-openjdk-devel.x86_64
+mvn --version
+java -version
+javac -version
