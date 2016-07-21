@@ -13,8 +13,8 @@ This repo holds a set of related bash, terraform, and ansible scripts that produ
 
 To begin, you need to install the AWS CLI tools, which are [available here.](https://aws.amazon.com/cli/)
 You will need to set up your AWS account so that you have a user that has AmazonEC2FullAccess permissions
-(and IAM permissions sufficient to inquire to users).  (Follow the AWS CLI install process to get that 
-account configured properly in your .aws folder)[http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-set-up.html]
+(and IAM permissions sufficient to inquire to users).  [Follow the AWS CLI install process to get that 
+account configured properly in your .aws folder](http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-set-up.html)
 Note:  make sure your environment variables have been set properly and you can use the AWS CLI to do some
 basic inquiry into your AWS environment before proceding.
 
