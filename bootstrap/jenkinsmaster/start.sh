@@ -93,7 +93,7 @@ oldpem=`cat startpem.prop 2> /dev/null`
 read  -p PEM_File_Path[$oldpem]: pfPath
 
 if [[ -z "$pfPath" ]]; then
-    pgPath=$oldpem
+    pfPath=$oldpem
 else
     echo $pfPath > startpem.prop
 fi

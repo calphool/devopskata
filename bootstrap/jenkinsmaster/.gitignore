@@ -4,3 +4,5 @@ buildEC2.tf.bak
 *.tfstate.backup
 tf/
 tflog.txt
+buildEC2.tf
+*.tf
