@@ -59,9 +59,7 @@ resource "aws_instance" "jenkinsmaster" {
 
 
     provisioner "remote-exec" {
-        inline = [
-            "./setupJenkinsMaster.sh",
-        ]
+        script="setupJenkinsMaster.sh"
         connection {
             type = "ssh"
             user = "ec2-user"
@@ -116,9 +114,7 @@ resource "aws_instance" "buildserver" {
 
 
     provisioner "remote-exec" {
-        inline = [
-            "./setupBuildServer.sh",
-        ]
+        script = "setupBuildServer.sh"
         connection {
             type = "ssh"
             user = "ec2-user"
@@ -146,9 +142,7 @@ resource "aws_instance" "targetserver" {
 
 
     provisioner "remote-exec" {
-        inline = [
-            "./setupTargetServer.sh"
-        ]
+        script="setupTargetServer.sh"
         connection {
             type = "ssh"
             user = "ec2-user"
@@ -206,9 +200,7 @@ resource "null_resource" "nlr4" {
     depends_on=["null_resource.nlr3"]
 
     provisioner "remote-exec" {
-        inline = [
-             "./pushPrivateKeyToJenkins.sh"
-        ]
+        script="pushPrivateKeyToJenkins.sh"
         connection {
             user = "ec2-user"
             private_key="CONNECTIONKEYFILE"
