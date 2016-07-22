@@ -331,3 +331,23 @@ resource "null_resource" "hosts_for_targetserver" {
         }
     }
 }
+
+resource "null_resource" "turn_on_target_slave_agent" {
+     depends_on=["hosts_for_jenkinsmaster","hosts_for_targetserver","hosts_for_buildserver"]
+   
+     provisioner "remote-exec" {
+         inline = [
+              "nohup java -jar /perm/swarm-client-jar-with-dependencies.jar -deleteExistingClients -description "Target deployment server" -disableClientsUniqueId -labels target -master http://jenkins.rounceville.com:8080 -username admin -password admin &"
+         ]
+     }
+}
+
+resource "null_resource" "turn_on_build_slave_agent" {
+     depends_on=["hosts_for_jenkinsmaster","hosts_for_targetserver","hosts_for_buildserver"]
+   
+     provisioner "remote-exec" {
+         inline = [
+              "nohup java -jar /perm/swarm-client-jar-with-dependencies.jar -deleteExistingClients -description "Java build server" -disableClientsUniqueId -labels build -master http://jenkins.rounceville.com:8080 -username admin -password admin &"
+         ]
+     }
+}
