@@ -49,7 +49,7 @@ resource "aws_security_group" "ssh_sg" {
 * run jenkins provisioning scripts
 */
 resource "aws_instance" "jenkinsmaster" {
-    ami = "ami-43c43d22"
+    ami = "ami-900ff7f1"
     instance_type = "t2.micro"
     key_name="devops_1"
     tags {
@@ -79,6 +79,18 @@ resource "aws_instance" "jenkinsmaster" {
     }
 }
 
+
+output "jenkinsmaster_public_ip" {
+    value = "${aws_instance.jenkinsmaster.public_ip}"
+}
+
+output "buildserver_public_ip" {
+    value = "${aws_instance.buildserver.public_ip}"
+}
+
+output "targetserver_public_ip" {
+    value = "${aws_instance.targetserver.public_ip}"
+}
 
 resource "aws_security_group" "ssh_and_8080" {
   name = "ssh-8080"
@@ -113,7 +125,7 @@ resource "aws_security_group" "ssh_and_8080" {
 * Bring up build server
 */
 resource "aws_instance" "buildserver" {
-    ami = "ami-b2877fd3"
+    ami = "ami-950ef6f4"
     instance_type = "t2.micro"
     key_name="devops_1"
     tags {
@@ -148,7 +160,7 @@ resource "aws_instance" "buildserver" {
 * Bring up target server
 */
 resource "aws_instance" "targetserver" {
-    ami = "ami-b2877fd3"
+    ami = "ami-5201f933"
     instance_type = "t2.micro"
     key_name="devops_1"
     tags {

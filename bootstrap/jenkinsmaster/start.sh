@@ -76,6 +76,9 @@ fi
 
 read -s  -p Github_Password: passw
 
+
+passwe=$(echo $passw | openssl enc -aes-128-cbc -a -salt -pass pass:wtf) 
+
 echo " "
 
 oldrepo=`cat startrepo.prop 2> /dev/null`
@@ -116,7 +119,7 @@ sed -i '' "s/SELFCIDRS/$(echo $selfcidr | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/
 sed -i '' "s/INGRESSBLOCK/$(echo $TF_VAR_ThisNodeProviderCIDR | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')/g" buildEC2.tf
 sed -i '' "s/GITHUB_REPONAME/$(echo $ghRepoName | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')/g" buildEC2.tf
 sed -i '' "s/GITHUB_USER/$(echo $ghUser | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')/g" buildEC2.tf
-sed -i '' "s/GITHUB_PWD/$(echo $passw | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')/g" buildEC2.tf
+sed -i '' "s/GITHUB_PWD/$(echo $passwe | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')/g" buildEC2.tf
 sed -i '' "s/CONNECTIONKEYFILE/$(echo $pfPath | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')/g" buildEC2.tf
 cp buildEC2.tf buildEC2.tf.bak
 installTerraform
@@ -128,3 +131,10 @@ terraform apply
 rm ./id_rsa 2> /dev/null
 rm ./id_rsa.pub 2> /dev/null
 rm buildEC2.tf
+
+echo You may need to provide your Mac password to update your /etc/hosts file
+echo to create *.rounceville.com entries
+cat /etc/hosts | sudo awk '!/.rounceville.com/' > ~/hosts2 ; sudo mv ~/hosts2 /etc/hosts
+sudo sh -c "echo \"$(terraform output jenkinsmaster_public_ip) jenkins.rounceville.com\" >> /etc/hosts"
+sudo sh -c "echo \"$(terraform output buildserver_public_ip) build.rounceville.com\" >> /etc/hosts"
+sudo sh -c "echo \"$(terraform output targetserver_public_ip) target.rounceville.com\" >> /etc/hosts"

@@ -1,13 +1,14 @@
 #!/bin/sh
 
-sudo mkdir /perm
-sudo mount /dev/xvdh /perm
+sudo mkdir /perm  2> /dev/null
+sudo mount /dev/xvdh /perm  2> /dev/null
 sudo yum -y update
 sudo yum -y install wget
 sudo yum -y install git
 sudo yum -y install java
 java -version
 cd ~
+rm -rf ~/devopskata 2> /dev/null
 sudo git clone https://github.com/calphool/devopskata.git
 sudo yum -y install python
 sudo yum -y install python-setuptools
