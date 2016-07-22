@@ -31,3 +31,11 @@ sudo sysctl -w net.ipv6.conf.all.disable_ipv6=1
 sudo sysctl -w net.ipv6.conf.default.disable_ipv6=1
 sudo ansible-galaxy install devops.tomcat7
 sudo ansible-playbook /home/ec2-user/devopskata/bootstrap/targetserver/startTomcat.yml
+
+#install hello page in tomcat
+sudo mkdir -p /var/lib/tomcat/webapps/hello
+cd /var/lib/tomcat/webapps
+sudo chown root:tomcat hello
+echo "Hello." > ~/index.html
+sudo chown root:tomcat ~/index.html
+sudo mv ~/index.html /var/lib/tomcat/webapps/hello
