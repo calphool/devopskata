@@ -58,6 +58,16 @@ fi
 }
 
 
+if [[ -z "$TF_VAR_ThisNodeExternalIP" ]] ; then
+	echo "You do not have TF_VAR_ThisNodeExternalIP set.  May sure to run:  source setenv.sh"
+        exit 1
+fi
+
+if [[ -z "$TF_VAR_ThisNodeProviderCIDR" ]] ; then
+	echo "You do not have TF_VAR_ThisNodeProviderCIDR set.  May sure to run:  source setenv.sh"
+fi
+
+
 rm *.tf 2> /dev/null
 cp buildEC2.tf.template buildEC2.tf
 
