@@ -19,7 +19,7 @@ sudo yum -y install nano
 sudo yum -y install ruby
 gem install cucumber
 gem install selenium
-selenium install
+/usr/local/bin/selenium install
 sudo pip install --upgrade pip
 sudo pip install --upgrade setuptools
 sudo pip install ansible
