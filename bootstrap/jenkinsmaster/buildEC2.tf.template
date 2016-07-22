@@ -333,7 +333,7 @@ resource "null_resource" "hosts_for_targetserver" {
 }
 
 resource "null_resource" "turn_on_target_slave_agent" {
-     depends_on=["hosts_for_jenkinsmaster","hosts_for_targetserver","hosts_for_buildserver"]
+     depends_on=["null_resource.hosts_for_jenkinsmaster","null_resource.hosts_for_targetserver","null_resource.hosts_for_buildserver"]
    
      provisioner "remote-exec" {
          inline = [
@@ -343,7 +343,7 @@ resource "null_resource" "turn_on_target_slave_agent" {
 }
 
 resource "null_resource" "turn_on_build_slave_agent" {
-     depends_on=["hosts_for_jenkinsmaster","hosts_for_targetserver","hosts_for_buildserver"]
+     depends_on=["null_resource.hosts_for_jenkinsmaster","null_resource.hosts_for_targetserver","null_resource.hosts_for_buildserver"]
    
      provisioner "remote-exec" {
          inline = [
