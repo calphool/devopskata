@@ -337,7 +337,7 @@ resource "null_resource" "turn_on_target_slave_agent" {
    
      provisioner "remote-exec" {
          inline = [
-              "nohup java -jar /perm/swarm-client-jar-with-dependencies.jar -deleteExistingClients -description "Target deployment server" -disableClientsUniqueId -labels target -master http://jenkins.rounceville.com:8080 -username admin -password admin &"
+              "nohup java -jar /perm/swarm-client-jar-with-dependencies.jar -deleteExistingClients -description \"Target deployment server\" -disableClientsUniqueId -labels target -master http://jenkins.rounceville.com:8080 -username admin -password admin &"
          ]
      }
 }
@@ -347,7 +347,7 @@ resource "null_resource" "turn_on_build_slave_agent" {
    
      provisioner "remote-exec" {
          inline = [
-              "nohup java -jar /perm/swarm-client-jar-with-dependencies.jar -deleteExistingClients -description "Java build server" -disableClientsUniqueId -labels build -master http://jenkins.rounceville.com:8080 -username admin -password admin &"
+              "nohup java -jar /perm/swarm-client-jar-with-dependencies.jar -deleteExistingClients -description \"Java build server\" -disableClientsUniqueId -labels build -master http://jenkins.rounceville.com:8080 -username admin -password admin &"
          ]
      }
 }
