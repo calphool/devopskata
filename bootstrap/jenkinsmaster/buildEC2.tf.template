@@ -333,12 +333,17 @@ resource "null_resource" "hosts_for_targetserver" {
 }
 
 resource "null_resource" "turn_on_target_slave_agent" {
-     depends_on=["null_resource.hosts_for_jenkinsmaster","null_resource.hosts_for_targetserver","null_resource.hosts_for_buildserver"]
+     depends_on=["null_resource.hosts_for_jenkinsmaster",
+                 "null_resource.hosts_for_targetserver",
+                 "null_resource.hosts_for_buildserver",
+                 "aws_instance.jenkinsmaster",
+                 "aws_instance.targetserver",
+                 "aws_instance.buildserver"]
    
      provisioner "remote-exec" {
          inline = [
               "cd ~",
-              "nohup java -jar /perm/swarm-client-jar-with-dependencies.jar -deleteExistingClients -description \"Target deployment server\" -disableClientsUniqueId -labels target -master http://jenkins.rounceville.com:8080 -username admin -password admin &"
+              "nohup java -jar /perm/swarm-client-jar-with-dependencies.jar -deleteExistingClients -description Target_deployment_server -disableClientsUniqueId -labels target -master http://jenkins.rounceville.com:8080 -username admin -password admin &"
          ]
         connection {
             user = "ec2-user"
@@ -349,12 +354,17 @@ resource "null_resource" "turn_on_target_slave_agent" {
 }
 
 resource "null_resource" "turn_on_build_slave_agent" {
-     depends_on=["null_resource.hosts_for_jenkinsmaster","null_resource.hosts_for_targetserver","null_resource.hosts_for_buildserver"]
+     depends_on=["null_resource.hosts_for_jenkinsmaster",
+                 "null_resource.hosts_for_targetserver",
+                 "null_resource.hosts_for_buildserver",
+                 "aws_instance.jenkinsmaster",
+                 "aws_instance.targetserver",
+                 "aws_instance.buildserver"]
    
      provisioner "remote-exec" {
          inline = [
               "cd ~",
-              "nohup java -jar /perm/swarm-client-jar-with-dependencies.jar -deleteExistingClients -description \"Java build server\" -disableClientsUniqueId -labels build -master http://jenkins.rounceville.com:8080 -username admin -password admin &"
+              "nohup java -jar /perm/swarm-client-jar-with-dependencies.jar -deleteExistingClients -description Java_build_server -disableClientsUniqueId -labels build -master http://jenkins.rounceville.com:8080 -username admin -password admin &"
          ]
         connection {
             user = "ec2-user"

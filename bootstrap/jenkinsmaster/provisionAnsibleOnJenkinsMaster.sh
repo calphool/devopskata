@@ -17,8 +17,8 @@ sudo yum -y install openssl-devel
 sudo yum -y install python-pip
 sudo yum -y install nano
 sudo yum -y install ruby
-gem install cucumber
-gem install selenium
+gem install cucumber &
+gem install selenium &
 /usr/local/bin/selenium install
 sudo pip install --upgrade pip
 sudo pip install --upgrade setuptools
