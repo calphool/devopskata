@@ -249,4 +249,61 @@ resource "null_resource" "nlr5" {
 }
 
 
-#aws ec2 describe-vpcs --query \"Vpcs[0].CidrBlock\" --output text --vpc-ids ${aws_security_group.ssh_and_8080.vpc_id}
+/* 
+* update /etc/hosts on buildserver
+*/
+resource "null_resource" "hosts_for_buildserver" {
+
+    provisioner "remote-exec" {
+        inline = [
+        "sudo -- sh -c \"echo ${aws_instance.targetserver.private_ip} targetserver >> /etc/hosts\"",
+        "sudo -- sh -c \"echo ${aws_instance.buildserver.private_ip} buildserver >> /etc/hosts\"",
+        "sudo -- sh -c \"echo ${aws_instance.jenkinsmaster.private_ip} jenkinsmaster >> /etc/hosts\""
+        ]
+        connection {
+            user = "ec2-user"
+            private_key="CONNECTIONKEYFILE"
+            host = "${aws_instance.buildserver.public_dns}"
+        }
+    }
+}
+
+
+/*
+* update /etc/hosts on jenkinsmaster
+*/
+resource "null_resource" "hosts_for_jenkinsmaster" {
+
+    provisioner "remote-exec" {
+        inline = [
+        "sudo -- sh -c \"echo ${aws_instance.targetserver.private_ip} targetserver >> /etc/hosts\"",
+        "sudo -- sh -c \"echo ${aws_instance.buildserver.private_ip} buildserver >> /etc/hosts\"",
+        "sudo -- sh -c \"echo ${aws_instance.jenkinsmaster.private_ip} jenkinsmaster >> /etc/hosts\""
+        ]
+        connection {
+            user = "ec2-user"
+            private_key="CONNECTIONKEYFILE"
+            host = "${aws_instance.jenkinsmaster.public_dns}"
+        }
+    }
+}
+
+
+/*
+* update /etc/hosts on targetserver
+*/
+resource "null_resource" "hosts_for_targetserver" {
+
+    provisioner "remote-exec" {
+        inline = [
+        "sudo -- sh -c \"echo ${aws_instance.targetserver.private_ip} targetserver >> /etc/hosts\"",
+        "sudo -- sh -c \"echo ${aws_instance.buildserver.private_ip} buildserver >> /etc/hosts\"",
+        "sudo -- sh -c \"echo ${aws_instance.jenkinsmaster.private_ip} jenkinsmaster >> /etc/hosts\""
+        ]
+        connection {
+            user = "ec2-user"
+            private_key="CONNECTIONKEYFILE"
+            host = "${aws_instance.targetserver.public_dns}"
+        }
+    }
+}
