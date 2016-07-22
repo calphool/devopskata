@@ -337,8 +337,14 @@ resource "null_resource" "turn_on_target_slave_agent" {
    
      provisioner "remote-exec" {
          inline = [
+              "cd ~",
               "nohup java -jar /perm/swarm-client-jar-with-dependencies.jar -deleteExistingClients -description \"Target deployment server\" -disableClientsUniqueId -labels target -master http://jenkins.rounceville.com:8080 -username admin -password admin &"
          ]
+        connection {
+            user = "ec2-user"
+            private_key="CONNECTIONKEYFILE"
+            host = "${aws_instance.targetserver.public_dns}"
+        }
      }
 }
 
@@ -347,7 +353,13 @@ resource "null_resource" "turn_on_build_slave_agent" {
    
      provisioner "remote-exec" {
          inline = [
+              "cd ~",
               "nohup java -jar /perm/swarm-client-jar-with-dependencies.jar -deleteExistingClients -description \"Java build server\" -disableClientsUniqueId -labels build -master http://jenkins.rounceville.com:8080 -username admin -password admin &"
          ]
+        connection {
+            user = "ec2-user"
+            private_key="CONNECTIONKEYFILE"
+            host = "${aws_instance.buildserver.public_dns}"
+        }
      }
 }
