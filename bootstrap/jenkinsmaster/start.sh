@@ -113,6 +113,12 @@ if [[ -z $repoExists ]] ; then
     exit 2
 fi
 
+
+
+
+# actual execution starts here
+SECONDS=0
+
 selfcidr=$(aws ec2 describe-vpcs --query "Vpcs[0].CidrBlock" --output text)
 echo " "
 sed -i '' "s/SELFCIDRS/$(echo $selfcidr | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')/g" buildEC2.tf
@@ -130,6 +136,11 @@ terraform apply
 rm ./id_rsa 2> /dev/null
 rm ./id_rsa.pub 2> /dev/null
 rm buildEC2.tf
+
+duration=$SECONDS
+echo " "
+echo "Terraform took: $((duration / 60)) minutes, $((duration % 60)) seconds to build infrastructure."
+echo " "
 
 echo You may need to provide your Mac password to update your /etc/hosts file
 echo to create *.rounceville.com entries
