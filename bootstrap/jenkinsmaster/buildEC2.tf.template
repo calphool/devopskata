@@ -73,7 +73,7 @@ resource "aws_instance" "jenkinsmaster" {
 
     ebs_block_device = {
         device_name="/dev/xvdh"
-        snapshot_id="snap-a38ee09c"
+        snapshot_id="snap-050caf3e"
         delete_on_termination="true"
         volume_type="gp2"
     }
@@ -148,7 +148,7 @@ resource "aws_instance" "buildserver" {
     }
     ebs_block_device = {
         device_name="/dev/xvdh"
-        snapshot_id="snap-a38ee09c"
+        snapshot_id="snap-050caf3e"
         delete_on_termination="true"
         volume_type="gp2"
     }
@@ -183,7 +183,7 @@ resource "aws_instance" "targetserver" {
     }
     ebs_block_device = {
         device_name="/dev/xvdh"
-        snapshot_id="snap-a38ee09c"
+        snapshot_id="snap-050caf3e"
         delete_on_termination="true"
         volume_type="gp2"
 }
