@@ -6,3 +6,5 @@ tf/
 tflog.txt
 buildEC2.tf
 *.tf
+vpc_cidr.txt
+logon.sh

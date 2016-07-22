@@ -110,7 +110,9 @@ if [[ -z $repoExists ]] ; then
     exit 2
 fi
 
+selfcidr=$(aws ec2 describe-vpcs --query "Vpcs[0].CidrBlock" --output text)
 echo " "
+sed -i '' "s/SELFCIDRS/$(echo $selfcidr | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')/g" buildEC2.tf
 sed -i '' "s/INGRESSBLOCK/$(echo $TF_VAR_ThisNodeProviderCIDR | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')/g" buildEC2.tf
 sed -i '' "s/GITHUB_REPONAME/$(echo $ghRepoName | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')/g" buildEC2.tf
 sed -i '' "s/GITHUB_USER/$(echo $ghUser | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')/g" buildEC2.tf
@@ -121,6 +123,7 @@ installTerraform
 pathAdd ./tf
 rm ./id_rsa 2> /dev/null
 rm ./id_rsa.pub 2> /dev/null
+touch vpc_cidr.txt
 terraform apply
 rm ./id_rsa 2> /dev/null
 rm ./id_rsa.pub 2> /dev/null

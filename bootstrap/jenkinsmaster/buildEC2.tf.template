@@ -23,14 +23,18 @@ resource "aws_security_group" "ssh_sg" {
       from_port = 22
       to_port = 22
       protocol = "TCP"
-      cidr_blocks = ["INGRESSBLOCK"]
+      cidr_blocks = ["INGRESSBLOCK","SELFCIDRS"]
   }
 
   ingress {
       from_port = 8080
       to_port = 8080
       protocol = "TCP"
-      cidr_blocks = ["INGRESSBLOCK","192.30.252.0/22"]
+      cidr_blocks = [
+	"INGRESSBLOCK",
+	"192.30.252.0/22",
+        "SELFCIDRS"
+     ]
   }
 
   egress {
@@ -84,14 +88,16 @@ resource "aws_security_group" "ssh_and_8080" {
       from_port = 22
       to_port = 22
       protocol = "TCP"
-      cidr_blocks = ["INGRESSBLOCK"]
+      cidr_blocks = ["INGRESSBLOCK","SELFCIDRS"]
   }
 
   ingress {
       from_port = 8080
       to_port = 8080
       protocol = "TCP"
-      cidr_blocks = ["INGRESSBLOCK"]
+      cidr_blocks = [
+      	"INGRESSBLOCK","SELFCIDRS"
+      ]
   }
 
   egress {
@@ -241,3 +247,6 @@ resource "null_resource" "nlr5" {
         command = "./pushPublicKeyToGithub.sh GITHUB_REPONAME GITHUB_USER GITHUB_PWD ${aws_instance.jenkinsmaster.public_dns}"
     }
 }
+
+
+#aws ec2 describe-vpcs --query \"Vpcs[0].CidrBlock\" --output text --vpc-ids ${aws_security_group.ssh_and_8080.vpc_id}
