@@ -126,7 +126,6 @@ installTerraform
 pathAdd ./tf
 rm ./id_rsa 2> /dev/null
 rm ./id_rsa.pub 2> /dev/null
-touch vpc_cidr.txt
 terraform apply
 rm ./id_rsa 2> /dev/null
 rm ./id_rsa.pub 2> /dev/null
