@@ -274,7 +274,8 @@ resource "null_resource" "hosts_for_buildserver" {
         "cat /etc/hosts | sudo awk '!/jenkinsmaster/' > ~/hosts2 ; sudo mv ~/hosts2 /etc/hosts",
         "sudo -- sh -c \"echo ${aws_instance.targetserver.private_ip} target.rounceville.com >> /etc/hosts\"",
         "sudo -- sh -c \"echo ${aws_instance.buildserver.private_ip} build.rounceville.com >> /etc/hosts\"",
-        "sudo -- sh -c \"echo ${aws_instance.jenkinsmaster.private_ip} jenkins.rounceville.com >> /etc/hosts\""
+        "sudo -- sh -c \"echo ${aws_instance.jenkinsmaster.private_ip} jenkins.rounceville.com >> /etc/hosts\"",
+        "sudo hostname -b build.rounceville.com"
         ]
         connection {
             user = "ec2-user"
@@ -298,7 +299,8 @@ resource "null_resource" "hosts_for_jenkinsmaster" {
         "cat /etc/hosts | sudo awk '!/jenkinsmaster/' > ~/hosts2 ; sudo mv ~/hosts2 /etc/hosts",
         "sudo -- sh -c \"echo ${aws_instance.targetserver.private_ip} target.rounceville.com >> /etc/hosts\"",
         "sudo -- sh -c \"echo ${aws_instance.buildserver.private_ip} build.rounceville.com >> /etc/hosts\"",
-        "sudo -- sh -c \"echo ${aws_instance.jenkinsmaster.private_ip} jenkins.rounceville.com >> /etc/hosts\""
+        "sudo -- sh -c \"echo ${aws_instance.jenkinsmaster.private_ip} jenkins.rounceville.com >> /etc/hosts\"",
+        "sudo hostname -b jenkins.rounceville.com"
         ]
         connection {
             user = "ec2-user"
@@ -322,8 +324,9 @@ resource "null_resource" "hosts_for_targetserver" {
         "cat /etc/hosts | sudo awk '!/jenkinsmaster/' > ~/hosts2 ; sudo mv ~/hosts2 /etc/hosts",
         "sudo -- sh -c \"echo ${aws_instance.targetserver.private_ip} target.rounceville.com >> /etc/hosts\"",
         "sudo -- sh -c \"echo ${aws_instance.buildserver.private_ip} build.rounceville.com >> /etc/hosts\"",
-        "sudo -- sh -c \"echo ${aws_instance.jenkinsmaster.private_ip} jenkins.rounceville.com >> /etc/hosts\""
-        ]
+        "sudo -- sh -c \"echo ${aws_instance.jenkinsmaster.private_ip} jenkins.rounceville.com >> /etc/hosts\"",
+        "sudo hostname -b target.rounceville.com" 
+       ]
         connection {
             user = "ec2-user"
             private_key="CONNECTIONKEYFILE"
