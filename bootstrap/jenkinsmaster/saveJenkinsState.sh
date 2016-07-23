@@ -1,3 +1,6 @@
 #!/usr/bin/env bash
 
-tar -zcvf jenkins_state.tar.gz /var/lib/jenkins/nodes /var/lib/jenkins/workspace /var/lib/jenkins/jobs /var/lib/jenkins/plugins /var/lib/jenkins/users /var/lib/jenkins/hudson.plugins* /var/lib/jenkins/config.xml /var/lib/jenkins/credentials.xml /var/lib/jenkins/github-plugin-configuration.xml /var/lib/jenkins/hudson.triggers.SCMTrigger.xml
+mkdir -p /var/lib/jenkins/workspace 2> /dev/null
+cd /var/lib/jenkins
+tar -zcvf jenkins_state.tar.gz nodes workspace jobs plugins users hudson.plugins*  *.xml --exclude 'jobs/*/builds/*'
+mv jenkins_state.tar.gz /perm/jenkins_state.tar.gz
