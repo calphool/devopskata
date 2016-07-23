@@ -73,7 +73,7 @@ resource "aws_instance" "jenkinsmaster" {
 
     ebs_block_device = {
         device_name="/dev/xvdh"
-        snapshot_id="snap-050caf3e"
+        snapshot_id="snap-ab0adb44"
         delete_on_termination="true"
         volume_type="gp2"
     }
@@ -148,7 +148,7 @@ resource "aws_instance" "buildserver" {
     }
     ebs_block_device = {
         device_name="/dev/xvdh"
-        snapshot_id="snap-050caf3e"
+        snapshot_id="snap-ab0adb44"
         delete_on_termination="true"
         volume_type="gp2"
     }
@@ -183,7 +183,7 @@ resource "aws_instance" "targetserver" {
     }
     ebs_block_device = {
         device_name="/dev/xvdh"
-        snapshot_id="snap-050caf3e"
+        snapshot_id="snap-ab0adb44"
         delete_on_termination="true"
         volume_type="gp2"
 }
@@ -343,7 +343,8 @@ resource "null_resource" "turn_on_target_slave_agent" {
      provisioner "remote-exec" {
          inline = [
               "cd ~",
-              "nohup java -jar /perm/swarm-client-jar-with-dependencies.jar -deleteExistingClients -description Target_deployment_server -disableClientsUniqueId -labels target -master http://jenkins.rounceville.com:8080 -username admin -password admin &"
+              "nohup java -jar /perm/swarm-client-jar-with-dependencies.jar -deleteExistingClients -description Target_deployment_server -disableClientsUniqueId -labels target -master http://jenkins.rounceville.com:8080 -username admin -password admin &",
+              "sleep 2"
          ]
         connection {
             user = "ec2-user"
@@ -364,7 +365,8 @@ resource "null_resource" "turn_on_build_slave_agent" {
      provisioner "remote-exec" {
          inline = [
               "cd ~",
-              "nohup java -jar /perm/swarm-client-jar-with-dependencies.jar -deleteExistingClients -description Java_build_server -disableClientsUniqueId -labels build -master http://jenkins.rounceville.com:8080 -username admin -password admin &"
+              "nohup java -jar /perm/swarm-client-jar-with-dependencies.jar -deleteExistingClients -description Java_build_server -disableClientsUniqueId -labels build -master http://jenkins.rounceville.com:8080 -username admin -password admin &",
+              "sleep 2"
          ]
         connection {
             user = "ec2-user"
