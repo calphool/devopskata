@@ -59,12 +59,12 @@ fi
 
 
 if [[ -z "$TF_VAR_ThisNodeExternalIP" ]] ; then
-	echo "You do not have TF_VAR_ThisNodeExternalIP set.  May sure to run:  source setenv.sh"
+	echo "You do not have TF_VAR_ThisNodeExternalIP set.  Make sure to run:  source setenv.sh"
         exit 1
 fi
 
 if [[ -z "$TF_VAR_ThisNodeProviderCIDR" ]] ; then
-	echo "You do not have TF_VAR_ThisNodeProviderCIDR set.  May sure to run:  source setenv.sh"
+	echo "You do not have TF_VAR_ThisNodeProviderCIDR set.  Make sure to run:  source setenv.sh"
 fi
 
 
@@ -129,6 +129,9 @@ fi
 # actual execution starts here
 SECONDS=0
 
+snapid=snap-ab0adb44
+customdomain=rounceville.com
+
 selfcidr=$(aws ec2 describe-vpcs --query "Vpcs[0].CidrBlock" --output text)
 echo " "
 sed -i '' "s/SELFCIDRS/$(echo $selfcidr | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')/g" buildEC2.tf
@@ -137,6 +140,8 @@ sed -i '' "s/GITHUB_REPONAME/$(echo $ghRepoName | sed -e 's/\\/\\\\/g; s/\//\\\/
 sed -i '' "s/GITHUB_USER/$(echo $ghUser | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')/g" buildEC2.tf
 sed -i '' "s/GITHUB_PWD/$(echo $passwe | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')/g" buildEC2.tf
 sed -i '' "s/CONNECTIONKEYFILE/$(echo $pfPath | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')/g" buildEC2.tf
+sed -i '' "s/PERMSNAPID/$(echo $snapid | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')/g" buildEC2.tf
+sed -i '' "s/CUSTOMDOMAIN/$(echo $customdomain | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')/g" buildEC2.tf
 cp buildEC2.tf buildEC2.tf.bak
 installTerraform
 pathAdd ./tf
@@ -153,8 +158,11 @@ echo "Terraform took: $((duration / 60)) minutes, $((duration % 60)) seconds to 
 echo " "
 
 echo You may need to provide your Mac password to update your /etc/hosts file
-echo to create *.rounceville.com entries
-cat /etc/hosts | sudo awk '!/.rounceville.com/' > ~/hosts2 ; sudo mv ~/hosts2 /etc/hosts
-sudo sh -c "echo \"$(terraform output jenkinsmaster_public_ip) jenkins.rounceville.com\" >> /etc/hosts"
-sudo sh -c "echo \"$(terraform output buildserver_public_ip) build.rounceville.com\" >> /etc/hosts"
-sudo sh -c "echo \"$(terraform output targetserver_public_ip) target.rounceville.com\" >> /etc/hosts"
+echo to create *.$customdomain entries
+cat /etc/hosts | sudo awk '!/'$customdomain'/' > ~/hosts2 ; sudo mv ~/hosts2 /etc/hosts
+cat /etc/hosts | sudo awk '!/jenkins./' > ~/hosts2 ; sudo mv ~/hosts2 /etc/hosts
+cat /etc/hosts | sudo awk '!/build./' > ~/hosts2 ; sudo mv ~/hosts2 /etc/hosts
+cat /etc/hosts | sudo awk '!/target./' > ~/hosts2 ; sudo mv ~/hosts2 /etc/hosts
+sudo sh -c "echo \"$(terraform output jenkinsmaster_public_ip) jenkins.$(echo $customdomain)\" >> /etc/hosts"
+sudo sh -c "echo \"$(terraform output buildserver_public_ip) build.$(echo $customdomain)\" >> /etc/hosts"
+sudo sh -c "echo \"$(terraform output targetserver_public_ip) target.$(echo $customdomain)\" >> /etc/hosts"

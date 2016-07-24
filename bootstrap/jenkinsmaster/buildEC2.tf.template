@@ -73,7 +73,7 @@ resource "aws_instance" "jenkinsmaster" {
 
     ebs_block_device = {
         device_name="/dev/xvdh"
-        snapshot_id="snap-ab0adb44"
+        snapshot_id="PERMSNAPID"
         delete_on_termination="true"
         volume_type="gp2"
     }
@@ -148,7 +148,7 @@ resource "aws_instance" "buildserver" {
     }
     ebs_block_device = {
         device_name="/dev/xvdh"
-        snapshot_id="snap-ab0adb44"
+        snapshot_id="PERMSNAPID"
         delete_on_termination="true"
         volume_type="gp2"
     }
@@ -183,7 +183,7 @@ resource "aws_instance" "targetserver" {
     }
     ebs_block_device = {
         device_name="/dev/xvdh"
-        snapshot_id="snap-ab0adb44"
+        snapshot_id="PERMSNAPID"
         delete_on_termination="true"
         volume_type="gp2"
 }
@@ -209,7 +209,7 @@ resource "null_resource" "nlr2" {
     depends_on=["null_resource.nlr1"]
 
     provisioner "local-exec" {
-        command = "ssh-keygen -f ./id_rsa -N '' -t rsa -b 4096 -C 'jrounceville@hotmail.com' ; ssh-keygen -y -f ./id_rsa > id_rsa.pub"
+        command = "ssh-keygen -f ./id_rsa -N '' -t rsa -b 4096 -C 'somekey@hotmail.com' ; ssh-keygen -y -f ./id_rsa > id_rsa.pub"
     }
 }
 
@@ -268,14 +268,14 @@ resource "null_resource" "hosts_for_buildserver" {
 
     provisioner "remote-exec" {
         inline = [
-        "cat /etc/hosts | sudo awk '!/.rounceville.com/' > ~/hosts2 ; sudo mv ~/hosts2 /etc/hosts",
+        "cat /etc/hosts | sudo awk '!/CUSTOMDOMAIN/' > ~/hosts2 ; sudo mv ~/hosts2 /etc/hosts",
         "cat /etc/hosts | sudo awk '!/targetserver/' > ~/hosts2 ; sudo mv ~/hosts2 /etc/hosts",
         "cat /etc/hosts | sudo awk '!/buildserver/' > ~/hosts2 ; sudo mv ~/hosts2 /etc/hosts",
         "cat /etc/hosts | sudo awk '!/jenkinsmaster/' > ~/hosts2 ; sudo mv ~/hosts2 /etc/hosts",
-        "sudo -- sh -c \"echo ${aws_instance.targetserver.private_ip} target.rounceville.com >> /etc/hosts\"",
-        "sudo -- sh -c \"echo ${aws_instance.buildserver.private_ip} build.rounceville.com >> /etc/hosts\"",
-        "sudo -- sh -c \"echo ${aws_instance.jenkinsmaster.private_ip} jenkins.rounceville.com >> /etc/hosts\"",
-        "sudo hostname -b build.rounceville.com"
+        "sudo -- sh -c \"echo ${aws_instance.targetserver.private_ip} target.CUSTOMDOMAIN >> /etc/hosts\"",
+        "sudo -- sh -c \"echo ${aws_instance.buildserver.private_ip} build.CUSTOMDOMAIN >> /etc/hosts\"",
+        "sudo -- sh -c \"echo ${aws_instance.jenkinsmaster.private_ip} jenkins.CUSTOMDOMAIN >> /etc/hosts\"",
+        "sudo hostnamectl set-hostname build.CUSTOMDOMAIN"
         ]
         connection {
             user = "ec2-user"
@@ -293,14 +293,14 @@ resource "null_resource" "hosts_for_jenkinsmaster" {
 
     provisioner "remote-exec" {
         inline = [
-        "cat /etc/hosts | sudo awk '!/.rounceville.com/' > ~/hosts2 ; sudo mv ~/hosts2 /etc/hosts",
+        "cat /etc/hosts | sudo awk '!/CUSTOMDOMAIN/' > ~/hosts2 ; sudo mv ~/hosts2 /etc/hosts",
         "cat /etc/hosts | sudo awk '!/targetserver/' > ~/hosts2 ; sudo mv ~/hosts2 /etc/hosts",
         "cat /etc/hosts | sudo awk '!/buildserver/' > ~/hosts2 ; sudo mv ~/hosts2 /etc/hosts",
         "cat /etc/hosts | sudo awk '!/jenkinsmaster/' > ~/hosts2 ; sudo mv ~/hosts2 /etc/hosts",
-        "sudo -- sh -c \"echo ${aws_instance.targetserver.private_ip} target.rounceville.com >> /etc/hosts\"",
-        "sudo -- sh -c \"echo ${aws_instance.buildserver.private_ip} build.rounceville.com >> /etc/hosts\"",
-        "sudo -- sh -c \"echo ${aws_instance.jenkinsmaster.private_ip} jenkins.rounceville.com >> /etc/hosts\"",
-        "sudo hostname -b jenkins.rounceville.com"
+        "sudo -- sh -c \"echo ${aws_instance.targetserver.private_ip} target.CUSTOMDOMAIN >> /etc/hosts\"",
+        "sudo -- sh -c \"echo ${aws_instance.buildserver.private_ip} build.CUSTOMDOMAIN >> /etc/hosts\"",
+        "sudo -- sh -c \"echo ${aws_instance.jenkinsmaster.private_ip} jenkins.CUSTOMDOMAIN >> /etc/hosts\"",
+        "sudo hostnamectl set-hostname jenkins.CUSTOMDOMAIN"
         ]
         connection {
             user = "ec2-user"
@@ -318,14 +318,14 @@ resource "null_resource" "hosts_for_targetserver" {
 
     provisioner "remote-exec" {
         inline = [
-        "cat /etc/hosts | sudo awk '!/.rounceville.com/' > ~/hosts2 ; sudo mv ~/hosts2 /etc/hosts",
+        "cat /etc/hosts | sudo awk '!/CUSTOMDOMAIN/' > ~/hosts2 ; sudo mv ~/hosts2 /etc/hosts",
         "cat /etc/hosts | sudo awk '!/targetserver/' > ~/hosts2 ; sudo mv ~/hosts2 /etc/hosts",
         "cat /etc/hosts | sudo awk '!/buildserver/' > ~/hosts2 ; sudo mv ~/hosts2 /etc/hosts",
         "cat /etc/hosts | sudo awk '!/jenkinsmaster/' > ~/hosts2 ; sudo mv ~/hosts2 /etc/hosts",
-        "sudo -- sh -c \"echo ${aws_instance.targetserver.private_ip} target.rounceville.com >> /etc/hosts\"",
-        "sudo -- sh -c \"echo ${aws_instance.buildserver.private_ip} build.rounceville.com >> /etc/hosts\"",
-        "sudo -- sh -c \"echo ${aws_instance.jenkinsmaster.private_ip} jenkins.rounceville.com >> /etc/hosts\"",
-        "sudo hostname -b target.rounceville.com" 
+        "sudo -- sh -c \"echo ${aws_instance.targetserver.private_ip} target.CUSTOMDOMAIN >> /etc/hosts\"",
+        "sudo -- sh -c \"echo ${aws_instance.buildserver.private_ip} build.CUSTOMDOMAIN >> /etc/hosts\"",
+        "sudo -- sh -c \"echo ${aws_instance.jenkinsmaster.private_ip} jenkins.CUSTOMDOMAIN >> /etc/hosts\"",
+        "sudo hostnamectl set-hostname target.CUSTOMDOMAIN" 
        ]
         connection {
             user = "ec2-user"
@@ -346,7 +346,7 @@ resource "null_resource" "turn_on_target_slave_agent" {
      provisioner "remote-exec" {
          inline = [
               "cd ~",
-              "nohup java -jar /perm/swarm-client-jar-with-dependencies.jar -deleteExistingClients -description Target_deployment_server -disableClientsUniqueId -labels target -master http://jenkins.rounceville.com:8080 -username admin -password admin &",
+              "nohup java -jar /perm/swarm-client-jar-with-dependencies.jar -deleteExistingClients -description Target_deployment_server -disableClientsUniqueId -labels target -master http://jenkins.CUSTOMDOMAIN:8080 -username admin -password admin &",
               "sleep 2"
          ]
         connection {
@@ -368,7 +368,7 @@ resource "null_resource" "turn_on_build_slave_agent" {
      provisioner "remote-exec" {
          inline = [
               "cd ~",
-              "nohup java -jar /perm/swarm-client-jar-with-dependencies.jar -deleteExistingClients -description Java_build_server -disableClientsUniqueId -labels build -master http://jenkins.rounceville.com:8080 -username admin -password admin &",
+              "nohup java -jar /perm/swarm-client-jar-with-dependencies.jar -deleteExistingClients -description Java_build_server -disableClientsUniqueId -labels build -master http://jenkins.CUSTOMDOMAIN:8080 -username admin -password admin &",
               "sleep 2"
          ]
         connection {
