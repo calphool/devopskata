@@ -111,6 +111,7 @@ resource "null_resource" "jenkinssetup" {
             type = "ssh"
             user = "ec2-user"
             private_key="CONNECTIONKEYFILE"
+            host="${aws_instance.jenkinsmaster.public_dns}"
         }
     }
 }

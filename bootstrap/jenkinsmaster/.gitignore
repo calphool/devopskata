@@ -7,3 +7,6 @@ tflog.txt
 buildEC2.tf
 *.tf
 vpc_cidr.txt
+p
+q
+
