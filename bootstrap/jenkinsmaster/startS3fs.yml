@@ -1,0 +1,3 @@
+- hosts: jenkinsmaster
+  roles:
+    - calphool.s3fs
