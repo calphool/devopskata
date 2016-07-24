@@ -33,3 +33,4 @@ sudo ansible-galaxy install geerlingguy.jenkins
 sudo tar zxf /perm/jenkins_state.tar.gz -C /
 sudo ansible-playbook /home/ec2-user/devopskata/bootstrap/jenkinsmaster/startJenkins.yml
 sudo /etc/init.d/jenkins restart
+sudo ansible-galaxy install calphool.s3fs
