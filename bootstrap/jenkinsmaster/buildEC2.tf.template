@@ -89,6 +89,7 @@ resource "null_resource" "pushkey" {
             type = "ssh"
             user = "ec2-user"
             private_key="CONNECTIONKEYFILE"
+            host = "${aws_instance.jenkinsmaster.public_dns}"
         }    
     }
 }
@@ -373,7 +374,7 @@ resource "null_resource" "turn_on_target_slave_agent" {
      depends_on=["null_resource.hosts_for_jenkinsmaster",
                  "null_resource.hosts_for_targetserver",
                  "null_resource.hosts_for_buildserver",
-                 "aws_instance.jenkinsmaster",
+                 "null_resource.jenkinssetup",
                  "aws_instance.targetserver",
                  "aws_instance.buildserver"]
    
@@ -395,7 +396,7 @@ resource "null_resource" "turn_on_build_slave_agent" {
      depends_on=["null_resource.hosts_for_jenkinsmaster",
                  "null_resource.hosts_for_targetserver",
                  "null_resource.hosts_for_buildserver",
-                 "aws_instance.jenkinsmaster",
+                 "null_resource.jenkinssetup",
                  "aws_instance.targetserver",
                  "aws_instance.buildserver"]
    
