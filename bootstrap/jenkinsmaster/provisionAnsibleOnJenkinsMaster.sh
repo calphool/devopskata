@@ -37,5 +37,5 @@ sudo ansible-galaxy install calphool.s3fs
 sudo ansible-playbook /home/ec2-user/devopskata/bootstrap/jenkinsmaster/startS3fs.yml
 sudo mkdir /home/ec2-user/s3
 sudo s3fs bucket /home/ec2-user/s3 -o passwd_file=/home/ec2-user/q -d -d
-sudo rm /home/ec2-user/q
-sudo rm /home/ec2-user/p
+#sudo rm /home/ec2-user/q
+#sudo rm /home/ec2-user/p
