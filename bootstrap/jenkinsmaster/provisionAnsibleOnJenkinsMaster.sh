@@ -40,5 +40,6 @@ sudo umount -f /home/ec2-user/s3 2>
 sudo rm -rf /home/ec2-user/s3 
 sudo mkdir -p /home/ec2-user/s3
 sudo s3fs calphoolbucket /home/ec2-user/s3 -o passwd_file=/home/ec2-user/q -o allow_other
+sleep 2
 #sudo rm /home/ec2-user/q
 #sudo rm /home/ec2-user/p
