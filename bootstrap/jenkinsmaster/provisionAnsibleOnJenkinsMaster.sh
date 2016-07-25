@@ -25,13 +25,15 @@ sudo pip install --upgrade setuptools
 sudo pip install ansible
 hash -r
 sudo mkdir -p /etc/ansible
-sudo echo 'localhost ansible_connection=local' | sudo tee --append /etc/ansible/hosts
-sudo echo '[jenkinsmaster]' | sudo tee --append /etc/ansible/hosts
-sudo echo 'localhost' | sudo tee --append /etc/ansible/hosts
+echo 'localhost ansible_connection=local' | sudo tee --append /etc/ansible/hosts
+echo '[jenkinsmaster]' | sudo tee --append /etc/ansible/hosts
+echo 'localhost' | sudo tee --append /etc/ansible/hosts
 sudo ansible jenkinsmaster -m ping
 sudo ansible-galaxy install geerlingguy.jenkins
 sudo tar zxf /perm/jenkins_state.tar.gz -C /
 sudo ansible-playbook /home/ec2-user/devopskata/bootstrap/jenkinsmaster/startJenkins.yml
+echo 'Defaults:jenkins !requiretty' | sudo tee --append /etc/sudoers
+echo 'jenkins ALL=(ALL) NOPASSWD: ALL' | sudo tee --append /etc/sudoers
 sudo /etc/init.d/jenkins restart
 sudo ansible-galaxy install calphool.s3fs
 sudo ansible-playbook /home/ec2-user/devopskata/bootstrap/jenkinsmaster/startS3fs.yml
@@ -41,5 +43,6 @@ sudo rm -rf /home/ec2-user/s3
 sudo mkdir -p /home/ec2-user/s3
 sudo s3fs calphoolbucket /home/ec2-user/s3 -o passwd_file=/home/ec2-user/q -o allow_other
 sleep 2
+cd /home/ec2-user/s3;sudo cp -R -v . /var/lib/jenkins/
 #sudo rm /home/ec2-user/q
 #sudo rm /home/ec2-user/p
