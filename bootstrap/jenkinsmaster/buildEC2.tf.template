@@ -57,7 +57,7 @@ resource "null_resource" "nrgenkey" {
 resource "aws_instance" "jenkinsmaster" {
     depends_on=["null_resource.nrgenkey"]
 
-    ami = "ami-900ff7f1"
+    ami = "JENKINSAMI"
     instance_type = "t2.micro"
     key_name="devops_1"
     tags {
@@ -163,7 +163,7 @@ resource "aws_security_group" "slave_securitygroup" {
 * Bring up build server
 */
 resource "aws_instance" "buildserver" {
-    ami = "ami-950ef6f4"
+    ami = "BUILDSERVERAMI"
     instance_type = "t2.micro"
     key_name="devops_1"
     tags {
@@ -196,7 +196,7 @@ resource "aws_instance" "buildserver" {
 * Bring up target server
 */
 resource "aws_instance" "targetserver" {
-    ami = "ami-5201f933"
+    ami = "TARGETSERVERAMI"
     instance_type = "t2.micro"
     key_name="devops_1"
     tags {

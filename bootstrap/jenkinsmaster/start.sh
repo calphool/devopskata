@@ -131,6 +131,9 @@ SECONDS=0
 
 snapid=snap-ab0adb44
 customdomain=rounceville.com
+jenkinsami=ami-35748f54
+buildserverami=ami-950ef6f4
+targetserverami=ami-5201f933
 
 selfcidr=$(aws ec2 describe-vpcs --query "Vpcs[0].CidrBlock" --output text)
 echo " "
@@ -142,6 +145,9 @@ sed -i '' "s/GITHUB_PWD/$(echo $passwe | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\
 sed -i '' "s/CONNECTIONKEYFILE/$(echo $pfPath | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')/g" buildEC2.tf
 sed -i '' "s/PERMSNAPID/$(echo $snapid | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')/g" buildEC2.tf
 sed -i '' "s/CUSTOMDOMAIN/$(echo $customdomain | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')/g" buildEC2.tf
+sed -i '' "s/JENKINSAMI/$(echo $jenkinsami | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')/g" buildEC2.tf
+sed -i '' "s/BUILDSERVERAMI/$(echo $buildserverami | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')/g" buildEC2.tf
+sed -i '' "s/TARGETSERVERAMI/$(echo $targetserverami | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')/g" buildEC2.tf
 cp buildEC2.tf buildEC2.tf.bak
 installTerraform
 pathAdd ./tf
