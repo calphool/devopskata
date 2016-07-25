@@ -15,8 +15,8 @@ provider "aws" {
 * Launch instance based on given AMI, yum update it, make sure it has wget and git, clone the project,
 * put ansible on the server, use ansible to install jenkins via a public ansible role in galaxy
 */
-resource "aws_security_group" "ssh_sg" {
-  name = "ssh-sg"
+resource "aws_security_group" "jenkins_securitygroup" {
+  name = "ssh-jenkins-sg"
   description = "Allow ssh and jenkins port" 
 
   ingress {
@@ -67,7 +67,7 @@ resource "aws_instance" "jenkinsmaster" {
         user="${connectionuser}"
         private_key="CONNECTIONKEYFILE"
     }
-    security_groups = ["${aws_security_group.ssh_sg.name}"]
+    security_groups = ["${aws_security_group.jenkins_securitygroup.name}"]
 
     ebs_block_device = {
         device_name="/dev/xvdh"
@@ -78,8 +78,8 @@ resource "aws_instance" "jenkinsmaster" {
 }
 
 
-resource "null_resource" "pushkey" {
-    depends_on=["aws_instance.jenkinsmaster"]
+resource "null_resource" "pushkey_to_jenkins" {
+   depends_on=["aws_instance.jenkinsmaster","null_resource.nrgenkey"]
  
    provisioner "file" {
         source="p"
@@ -95,7 +95,7 @@ resource "null_resource" "pushkey" {
 }
 
 resource "null_resource" "rmkey" {
-    depends_on=["null_resource.pushkey"]
+    depends_on=["null_resource.pushkey_to_jenkins"]
 
     provisioner "local-exec" {
         command="rm p"
@@ -103,7 +103,7 @@ resource "null_resource" "rmkey" {
 }
 
 resource "null_resource" "jenkinssetup" {
-   depends_on=["null_resource.pushkey"]
+   depends_on=["null_resource.pushkey_to_jenkins"]
 
    provisioner "remote-exec" {
         script="setupJenkinsMaster.sh"
@@ -128,8 +128,10 @@ output "targetserver_public_ip" {
     value = "${aws_instance.targetserver.public_ip}"
 }
 
-resource "aws_security_group" "ssh_and_8080" {
-  name = "ssh-8080"
+
+
+resource "aws_security_group" "slave_securitygroup" {
+  name = "slave-securitygroup"
   description = "Allow ssh and 8080"
 
   ingress {
@@ -171,8 +173,7 @@ resource "aws_instance" "buildserver" {
         user="${connectionuser}"
         private_key="CONNECTIONKEYFILE"
     }
-    security_groups = ["${aws_security_group.ssh_and_8080.name}"]
-
+    security_groups = ["${aws_security_group.slave_securitygroup.name}"]
 
     provisioner "remote-exec" {
         script = "setupBuildServer.sh"
@@ -188,7 +189,6 @@ resource "aws_instance" "buildserver" {
         delete_on_termination="true"
         volume_type="gp2"
     }
-
 }
 
 
@@ -206,8 +206,7 @@ resource "aws_instance" "targetserver" {
         user="${connectionuser}"
         private_key="CONNECTIONKEYFILE"
     }
-    security_groups = ["${aws_security_group.ssh_and_8080.name}"]
-
+    security_groups = ["${aws_security_group.slave_securitygroup.name}"]
 
     provisioner "remote-exec" {
         script="setupTargetServer.sh"
@@ -222,8 +221,7 @@ resource "aws_instance" "targetserver" {
         snapshot_id="PERMSNAPID"
         delete_on_termination="true"
         volume_type="gp2"
-}
-
+    }
 }
 
 
@@ -231,7 +229,8 @@ resource "aws_instance" "targetserver" {
 /*
 * link up Github webhook to this instance of jenkins
 */
-resource "null_resource" "nlr1" {
+resource "null_resource" "nlr1_updatewebhook" {
+    
     provisioner "local-exec" {         
         command = "./updateGithubWebhook.sh ${aws_instance.jenkinsmaster.public_dns} GITHUB_REPONAME GITHUB_USER GITHUB_PWD"
     }
@@ -241,8 +240,8 @@ resource "null_resource" "nlr1" {
 /*
 * Generate a public/private key pair locally
 */
-resource "null_resource" "nlr2" {
-    depends_on=["null_resource.nlr1"]
+resource "null_resource" "nlr2_genkeylocally" {
+    depends_on=["null_resource.nlr1_updatewebhook"]
 
     provisioner "local-exec" {
         command = "ssh-keygen -f ./id_rsa -N '' -t rsa -b 4096 -C 'somekey@hotmail.com' ; ssh-keygen -y -f ./id_rsa > id_rsa.pub"
@@ -252,8 +251,8 @@ resource "null_resource" "nlr2" {
 /*
 * copy the private key to the jenkins server
 */
-resource "null_resource" "nlr3" {
-    depends_on=["null_resource.nlr2"]
+resource "null_resource" "nlr3_pushkeytojenkins" {
+    depends_on=["null_resource.nlr2_genkeylocally"]
 
     provisioner "file" {
         connection {
@@ -271,11 +270,11 @@ resource "null_resource" "nlr3" {
 /*
 * put the private key in jenkins' key store and change its ownership
 */
-resource "null_resource" "nlr4" {
-    depends_on=["null_resource.nlr3"]
+resource "null_resource" "nlr4_chmodkey" {
+    depends_on=["null_resource.nlr3_pushkeytojenkins"]
 
     provisioner "remote-exec" {
-        script="pushPrivateKeyToJenkins.sh"
+        script="ChmodPrivateKey.sh"
         connection {
             user = "ec2-user"
             private_key="CONNECTIONKEYFILE"
@@ -288,8 +287,8 @@ resource "null_resource" "nlr4" {
 /*
 * push the public key to jenkins' delivery keys
 */
-resource "null_resource" "nlr5" {
-    depends_on=["null_resource.nlr4"]
+resource "null_resource" "nlr5_pushkey_to_github" {
+    depends_on=["null_resource.nlr4_chmodkey"]
 
     provisioner "local-exec" {
         command = "./pushPublicKeyToGithub.sh GITHUB_REPONAME GITHUB_USER GITHUB_PWD ${aws_instance.jenkinsmaster.public_dns}"
@@ -301,6 +300,7 @@ resource "null_resource" "nlr5" {
 * update /etc/hosts on buildserver
 */
 resource "null_resource" "hosts_for_buildserver" {
+    depends_on=["aws_instance.buildserver", "aws_instance.targetserver", "aws_instance.jenkinsmaster"]
 
     provisioner "remote-exec" {
         inline = [
@@ -326,6 +326,7 @@ resource "null_resource" "hosts_for_buildserver" {
 * update /etc/hosts on jenkinsmaster
 */
 resource "null_resource" "hosts_for_jenkinsmaster" {
+    depends_on=["aws_instance.buildserver", "aws_instance.targetserver", "aws_instance.jenkinsmaster"]
 
     provisioner "remote-exec" {
         inline = [
@@ -351,6 +352,7 @@ resource "null_resource" "hosts_for_jenkinsmaster" {
 * update /etc/hosts on targetserver
 */
 resource "null_resource" "hosts_for_targetserver" {
+    depends_on=["aws_instance.buildserver", "aws_instance.targetserver", "aws_instance.jenkinsmaster"]
 
     provisioner "remote-exec" {
         inline = [
