@@ -16,6 +16,10 @@ installAWSCli() {
     pip install -q awscli
 }
 
+installCrudini() {
+    pip install -q crudini
+}
+
 
 validateAWSSetup() {
     if [[ -z "$AWS_CONFIG_FILE" ]] ; then 
@@ -44,6 +48,9 @@ installwget
 
 echo "Making sure python is installed..."
 installPython
+
+echo "Making sure crudini is installed..."
+installCrudini
 
 echo "Making sure AWS command line interface is installed..."
 installAWSCli

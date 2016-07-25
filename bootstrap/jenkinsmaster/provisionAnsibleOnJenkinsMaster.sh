@@ -35,9 +35,10 @@ sudo ansible-playbook /home/ec2-user/devopskata/bootstrap/jenkinsmaster/startJen
 sudo /etc/init.d/jenkins restart
 sudo ansible-galaxy install calphool.s3fs
 sudo ansible-playbook /home/ec2-user/devopskata/bootstrap/jenkinsmaster/startS3fs.yml
-sudo umount -f /home/ec2-user/s3 2> /dev/null
-sudo rm -rf /home/ec2-user/s3 2> /dev/null
+echo 'user_allow_other' | sudo tee --append /etc/fuse.conf
+sudo umount -f /home/ec2-user/s3 2> 
+sudo rm -rf /home/ec2-user/s3 
 sudo mkdir -p /home/ec2-user/s3
-sudo s3fs calphoolbucket /home/ec2-user/s3 -o passwd_file=/home/ec2-user/q
+sudo s3fs calphoolbucket /home/ec2-user/s3 -o passwd_file=/home/ec2-user/q -o allow_other
 #sudo rm /home/ec2-user/q
 #sudo rm /home/ec2-user/p
