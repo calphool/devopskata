@@ -20,5 +20,5 @@ str1a=$str1$4"\", \"key\": "
 str2=\"$keydata'", "read_only": true }'
 str3=$str1a$str2
 echo $str3 > tmp.txt
-curl -H "Content-Type: application/json" -v -X POST -u $2:$passw https://api.github.com/repos/$2/$1/keys --data @tmp.txt
+curl -H "Content-Type: application/json" -X POST -u $2:$passw https://api.github.com/repos/$2/$1/keys --data @tmp.txt
 rm tmp.txt 2> /dev/null
