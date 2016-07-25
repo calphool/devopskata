@@ -43,6 +43,7 @@ sudo mkdir -p /home/ec2-user/s3
 sudo s3fs calphoolbucket /home/ec2-user/s3 -o passwd_file=/home/ec2-user/q -o allow_other
 sleep 2
 cd /home/ec2-user/s3;sudo cp -R -v . /var/lib/jenkins/
+sudo chown -hRv jenkins:jenkins /var/lib/jenkins/jobs
 sudo /etc/init.d/jenkins restart
 #sudo rm /home/ec2-user/q
 sudo rm /home/ec2-user/p
