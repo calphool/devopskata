@@ -34,7 +34,6 @@ sudo tar zxf /perm/jenkins_state.tar.gz -C /
 sudo ansible-playbook /home/ec2-user/devopskata/bootstrap/jenkinsmaster/startJenkins.yml
 echo 'Defaults:jenkins !requiretty' | sudo tee --append /etc/sudoers
 echo 'jenkins ALL=(ALL) NOPASSWD: ALL' | sudo tee --append /etc/sudoers
-sudo /etc/init.d/jenkins restart
 sudo ansible-galaxy install calphool.s3fs
 sudo ansible-playbook /home/ec2-user/devopskata/bootstrap/jenkinsmaster/startS3fs.yml
 echo 'user_allow_other' | sudo tee --append /etc/fuse.conf
@@ -44,5 +43,6 @@ sudo mkdir -p /home/ec2-user/s3
 sudo s3fs calphoolbucket /home/ec2-user/s3 -o passwd_file=/home/ec2-user/q -o allow_other
 sleep 2
 cd /home/ec2-user/s3;sudo cp -R -v . /var/lib/jenkins/
+sudo /etc/init.d/jenkins restart
 #sudo rm /home/ec2-user/q
-#sudo rm /home/ec2-user/p
+sudo rm /home/ec2-user/p
