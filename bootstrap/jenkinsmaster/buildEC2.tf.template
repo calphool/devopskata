@@ -334,7 +334,7 @@ resource "null_resource" "nlr5_pushkey_to_github" {
 * update /etc/hosts on buildserver
 */
 resource "null_resource" "hosts_for_buildserver" {
-    depends_on=["aws_instance.buildserver", "aws_instance.qaserver", "aws_instance.jenkinsmaster", "aws_instance.prodserver"]]
+    depends_on=["aws_instance.buildserver", "aws_instance.qaserver", "aws_instance.jenkinsmaster", "aws_instance.prodserver"]
 
     provisioner "remote-exec" {
         inline = [
