@@ -128,6 +128,10 @@ output "qaserver_public_ip" {
     value = "${aws_instance.qaserver.public_ip}"
 }
 
+output "prodserver_public_ip" {
+    value = "${aws_instance.prodserver.public_ip}"
+}
+
 
 
 resource "aws_security_group" "slave_securitygroup" {
@@ -225,6 +229,36 @@ resource "aws_instance" "qaserver" {
 }
 
 
+resource "aws_instance" "prodserver" {
+    ami = "PRODSERVERAMI"
+    instance_type = "t2.micro"
+    key_name="devops_1"
+    tags {
+        name = "ProdServer"
+    }
+    connection {
+        user="${connectionuser}"
+        private_key="CONNECTIONKEYFILE"
+    }
+    security_groups = ["${aws_security_group.slave_securitygroup.name}"]
+
+    provisioner "remote-exec" {
+        script="setupProdServer.sh"
+        connection {
+            type = "ssh"
+            user = "ec2-user"
+            private_key="CONNECTIONKEYFILE"
+        }
+    }
+    ebs_block_device = {
+        device_name="/dev/xvdh"
+        snapshot_id="PERMSNAPID"
+        delete_on_termination="true"
+        volume_type="gp2"
+    }
+}
+
+
 
 /*
 * link up Github webhook to this instance of jenkins
@@ -300,15 +334,17 @@ resource "null_resource" "nlr5_pushkey_to_github" {
 * update /etc/hosts on buildserver
 */
 resource "null_resource" "hosts_for_buildserver" {
-    depends_on=["aws_instance.buildserver", "aws_instance.qaserver", "aws_instance.jenkinsmaster"]
+    depends_on=["aws_instance.buildserver", "aws_instance.qaserver", "aws_instance.jenkinsmaster", "aws_instance.prodserver"]]
 
     provisioner "remote-exec" {
         inline = [
         "cat /etc/hosts | sudo awk '!/CUSTOMDOMAIN/' > ~/hosts2 ; sudo mv ~/hosts2 /etc/hosts",
         "cat /etc/hosts | sudo awk '!/qaserver/' > ~/hosts2 ; sudo mv ~/hosts2 /etc/hosts",
+        "cat /etc/hosts | sudo awk '!/prodserver/' > ~/hosts2 ; sudo mv ~/hosts2 /etc/hosts",
         "cat /etc/hosts | sudo awk '!/buildserver/' > ~/hosts2 ; sudo mv ~/hosts2 /etc/hosts",
         "cat /etc/hosts | sudo awk '!/jenkinsmaster/' > ~/hosts2 ; sudo mv ~/hosts2 /etc/hosts",
         "sudo -- sh -c \"echo ${aws_instance.qaserver.private_ip} qa.CUSTOMDOMAIN >> /etc/hosts\"",
+        "sudo -- sh -c \"echo ${aws_instance.prodserver.private_ip} prod.CUSTOMDOMAIN >> /etc/hosts\"",
         "sudo -- sh -c \"echo ${aws_instance.buildserver.private_ip} build.CUSTOMDOMAIN >> /etc/hosts\"",
         "sudo -- sh -c \"echo ${aws_instance.jenkinsmaster.private_ip} jenkins.CUSTOMDOMAIN >> /etc/hosts\"",
         "sudo hostnamectl set-hostname build.CUSTOMDOMAIN"
@@ -326,15 +362,17 @@ resource "null_resource" "hosts_for_buildserver" {
 * update /etc/hosts on jenkinsmaster
 */
 resource "null_resource" "hosts_for_jenkinsmaster" {
-    depends_on=["aws_instance.buildserver", "aws_instance.qaserver", "aws_instance.jenkinsmaster"]
+    depends_on=["aws_instance.buildserver", "aws_instance.qaserver", "aws_instance.jenkinsmaster", "aws_instance.prodserver"]
 
     provisioner "remote-exec" {
         inline = [
         "cat /etc/hosts | sudo awk '!/CUSTOMDOMAIN/' > ~/hosts2 ; sudo mv ~/hosts2 /etc/hosts",
         "cat /etc/hosts | sudo awk '!/qaserver/' > ~/hosts2 ; sudo mv ~/hosts2 /etc/hosts",
+        "cat /etc/hosts | sudo awk '!/prodserver/' > ~/hosts2 ; sudo mv ~/hosts2 /etc/hosts",
         "cat /etc/hosts | sudo awk '!/buildserver/' > ~/hosts2 ; sudo mv ~/hosts2 /etc/hosts",
         "cat /etc/hosts | sudo awk '!/jenkinsmaster/' > ~/hosts2 ; sudo mv ~/hosts2 /etc/hosts",
         "sudo -- sh -c \"echo ${aws_instance.qaserver.private_ip} qa.CUSTOMDOMAIN >> /etc/hosts\"",
+        "sudo -- sh -c \"echo ${aws_instance.prodserver.private_ip} prod.CUSTOMDOMAIN >> /etc/hosts\"",
         "sudo -- sh -c \"echo ${aws_instance.buildserver.private_ip} build.CUSTOMDOMAIN >> /etc/hosts\"",
         "sudo -- sh -c \"echo ${aws_instance.jenkinsmaster.private_ip} jenkins.CUSTOMDOMAIN >> /etc/hosts\"",
         "sudo hostnamectl set-hostname jenkins.CUSTOMDOMAIN"
@@ -352,15 +390,17 @@ resource "null_resource" "hosts_for_jenkinsmaster" {
 * update /etc/hosts on qaserver
 */
 resource "null_resource" "hosts_for_qaserver" {
-    depends_on=["aws_instance.buildserver", "aws_instance.qaserver", "aws_instance.jenkinsmaster"]
+    depends_on=["aws_instance.buildserver", "aws_instance.qaserver", "aws_instance.jenkinsmaster", "aws_instance.prodserver"]
 
     provisioner "remote-exec" {
         inline = [
         "cat /etc/hosts | sudo awk '!/CUSTOMDOMAIN/' > ~/hosts2 ; sudo mv ~/hosts2 /etc/hosts",
         "cat /etc/hosts | sudo awk '!/qaserver/' > ~/hosts2 ; sudo mv ~/hosts2 /etc/hosts",
+        "cat /etc/hosts | sudo awk '!/prodserver/' > ~/hosts2 ; sudo mv ~/hosts2 /etc/hosts",
         "cat /etc/hosts | sudo awk '!/buildserver/' > ~/hosts2 ; sudo mv ~/hosts2 /etc/hosts",
         "cat /etc/hosts | sudo awk '!/jenkinsmaster/' > ~/hosts2 ; sudo mv ~/hosts2 /etc/hosts",
         "sudo -- sh -c \"echo ${aws_instance.qaserver.private_ip} qa.CUSTOMDOMAIN >> /etc/hosts\"",
+        "sudo -- sh -c \"echo ${aws_instance.prodserver.private_ip} prod.CUSTOMDOMAIN >> /etc/hosts\"",
         "sudo -- sh -c \"echo ${aws_instance.buildserver.private_ip} build.CUSTOMDOMAIN >> /etc/hosts\"",
         "sudo -- sh -c \"echo ${aws_instance.jenkinsmaster.private_ip} jenkins.CUSTOMDOMAIN >> /etc/hosts\"",
         "sudo hostnamectl set-hostname qa.CUSTOMDOMAIN" 
@@ -373,13 +413,41 @@ resource "null_resource" "hosts_for_qaserver" {
     }
 }
 
+
+
+resource "null_resource" "hosts_for_prodserver" {
+    depends_on=["aws_instance.buildserver", "aws_instance.qaserver", "aws_instance.jenkinsmaster", "aws_instance.prodserver"]
+
+    provisioner "remote-exec" {
+        inline = [
+        "cat /etc/hosts | sudo awk '!/CUSTOMDOMAIN/' > ~/hosts2 ; sudo mv ~/hosts2 /etc/hosts",
+        "cat /etc/hosts | sudo awk '!/qaserver/' > ~/hosts2 ; sudo mv ~/hosts2 /etc/hosts",
+        "cat /etc/hosts | sudo awk '!/prodserver/' > ~/hosts2 ; sudo mv ~/hosts2 /etc/hosts",
+        "cat /etc/hosts | sudo awk '!/buildserver/' > ~/hosts2 ; sudo mv ~/hosts2 /etc/hosts",
+        "cat /etc/hosts | sudo awk '!/jenkinsmaster/' > ~/hosts2 ; sudo mv ~/hosts2 /etc/hosts",
+        "sudo -- sh -c \"echo ${aws_instance.qaserver.private_ip} qa.CUSTOMDOMAIN >> /etc/hosts\"",
+        "sudo -- sh -c \"echo ${aws_instance.prodserver.private_ip} prod.CUSTOMDOMAIN >> /etc/hosts\"",
+        "sudo -- sh -c \"echo ${aws_instance.buildserver.private_ip} build.CUSTOMDOMAIN >> /etc/hosts\"",
+        "sudo -- sh -c \"echo ${aws_instance.jenkinsmaster.private_ip} jenkins.CUSTOMDOMAIN >> /etc/hosts\"",
+        "sudo hostnamectl set-hostname prod.CUSTOMDOMAIN" 
+       ]
+        connection {
+            user = "ec2-user"
+            private_key="CONNECTIONKEYFILE"
+            host = "${aws_instance.prodserver.public_dns}"
+        }
+    }
+}
+
 resource "null_resource" "turn_on_qa_slave_agent" {
      depends_on=["null_resource.hosts_for_jenkinsmaster",
                  "null_resource.hosts_for_qaserver",
+                 "null_resource.hosts_for_prodserver",
                  "null_resource.hosts_for_buildserver",
                  "null_resource.jenkinssetup",
                  "aws_instance.qaserver",
-                 "aws_instance.buildserver"]
+                 "aws_instance.buildserver",
+                 "aws_instance.prodserver"]
    
      provisioner "remote-exec" {
          inline = [
@@ -394,13 +462,38 @@ resource "null_resource" "turn_on_qa_slave_agent" {
         }
      }
 }
+resource "null_resource" "turn_on_prod_slave_agent" {
+     depends_on=["null_resource.hosts_for_jenkinsmaster",
+                 "null_resource.hosts_for_qaserver",
+                 "null_resource.hosts_for_prodserver",
+                 "null_resource.hosts_for_buildserver",
+                 "null_resource.jenkinssetup",
+                 "aws_instance.qaserver",
+                 "aws_instance.buildserver",
+                 "aws_instance.prodserver"]
+   
+     provisioner "remote-exec" {
+         inline = [
+              "cd ~",
+              "nohup java -jar /perm/swarm-client-jar-with-dependencies.jar -deleteExistingClients -description prod_server -disableClientsUniqueId -labels prod -master http://jenkins.CUSTOMDOMAIN:8080 -username admin -password admin &",
+              "sleep 2"
+         ]
+        connection {
+            user = "ec2-user"
+            private_key="CONNECTIONKEYFILE"
+            host = "${aws_instance.prodserver.public_dns}"
+        }
+     }
+}
 
 resource "null_resource" "turn_on_build_slave_agent" {
      depends_on=["null_resource.hosts_for_jenkinsmaster",
                  "null_resource.hosts_for_qaserver",
+                 "null_resource.hosts_for_prodserver",
                  "null_resource.hosts_for_buildserver",
                  "null_resource.jenkinssetup",
                  "aws_instance.qaserver",
+                 "aws_instance.prodserver",
                  "aws_instance.buildserver"]
    
      provisioner "remote-exec" {

@@ -1,4 +1,4 @@
-- hosts: targetserver
+- hosts: prodserver
   roles:
      - role: devops.tomcat7
        tomcat7_packages:

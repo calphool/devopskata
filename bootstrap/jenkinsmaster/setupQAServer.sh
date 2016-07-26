@@ -24,13 +24,13 @@ sudo pip install ansible
 hash -r
 sudo mkdir -p /etc/ansible
 sudo echo 'localhost ansible_connection=local' | sudo tee --append /etc/ansible/hosts
-sudo echo '[targetserver]' | sudo tee --append /etc/ansible/hosts
+sudo echo '[qaserver]' | sudo tee --append /etc/ansible/hosts
 sudo echo 'localhost' | sudo tee --append /etc/ansible/hosts
 sudo ansible buildserver -m ping
 sudo sysctl -w net.ipv6.conf.all.disable_ipv6=1
 sudo sysctl -w net.ipv6.conf.default.disable_ipv6=1
 sudo ansible-galaxy install devops.tomcat7
-sudo ansible-playbook /home/ec2-user/devopskata/bootstrap/targetserver/startTomcat.yml
+sudo ansible-playbook /home/ec2-user/devopskata/bootstrap/qaserver/startTomcat.yml
 
 #install hello page in tomcat
 sudo mkdir -p /var/lib/tomcat/webapps/hello
