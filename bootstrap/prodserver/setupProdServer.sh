@@ -7,6 +7,9 @@ sudo yum -y install wget
 sudo yum -y install git
 sudo yum -y install java
 java -version
+cd ~
+sudo rm -rf ~/devopskata
+sudo git clone https://github.com/calphool/devopskata.git
 sudo ./../shared/setupAnsible.sh
 sudo mkdir -p /etc/ansible
 sudo echo 'localhost ansible_connection=local' | sudo tee --append /etc/ansible/hosts
