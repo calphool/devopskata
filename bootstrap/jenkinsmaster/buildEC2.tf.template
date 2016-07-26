@@ -330,7 +330,7 @@ resource "null_resource" "nlr2_genkeylocally" {
 /*
 * copy the private key to the jenkins server
 */
-resource "null_resource" "nlr3_pushkeytojenkins" {
+resource "null_resource" "nlr3_pushprivkeytojenkins" {
     depends_on=["null_resource.nlr2_genkeylocally"]
 
     provisioner "file" {
@@ -350,7 +350,7 @@ resource "null_resource" "nlr3_pushkeytojenkins" {
 * put the private key in jenkins' key store and change its ownership
 */
 resource "null_resource" "nlr4_chmodkey" {
-    depends_on=["null_resource.nlr3_pushkeytojenkins"]
+    depends_on=["null_resource.nlr3_pushprivkeytojenkins"]
 
     provisioner "remote-exec" {
         script="ChmodPrivateKey.sh"
