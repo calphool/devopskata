@@ -1,3 +1,5 @@
-- hosts: jenkinsmaster
+- hosts: prodserver
   roles:
-    - calphool.s3fs
+     - role: devops.tomcat7
+       tomcat7_packages:
+         - tomcat
