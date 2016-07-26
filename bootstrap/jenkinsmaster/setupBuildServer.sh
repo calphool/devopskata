@@ -18,6 +18,13 @@ sudo rm -rf ~/devopskata
 sudo git clone https://github.com/calphool/devopskata.git
 sudo sysctl -w net.ipv6.conf.all.disable_ipv6=1
 sudo sysctl -w net.ipv6.conf.default.disable_ipv6=1
+
+sudo mkdir -p /etc/ansible
+echo 'localhost ansible_connection=local' | sudo tee --append /etc/ansible/hosts
+echo '[buildserver]' | sudo tee --append /etc/ansible/hosts
+echo 'localhost' | sudo tee --append /etc/ansible/hosts
+sudo ansible buildserver -m ping
+
 cat p | openssl enc -aes-128-cbc -a -d -salt -pass pass:wtf > q
 chmod 600 p
 chmod 600 q
