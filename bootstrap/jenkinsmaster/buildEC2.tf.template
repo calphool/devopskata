@@ -123,6 +123,21 @@ resource "null_resource" "pushkey_to_prod" {
         }    
     }
 }
+resource "null_resource" "pushkey_to_build" {
+   depends_on=["aws_instance.buildserver","null_resource.nrgenkey"]
+ 
+   provisioner "file" {
+        source="p"
+        destination="/home/ec2-user/p"
+
+        connection {
+            type = "ssh"
+            user = "ec2-user"
+            private_key="CONNECTIONKEYFILE"
+            host = "${aws_instance.buildserver.public_dns}"
+        }    
+    }
+}
 
 resource "null_resource" "rmkey" {
     depends_on=["null_resource.pushkey_to_jenkins","null_resource.pushkey_to_qa","null_resource.pushkey_to_build","null_resource.pushkey_to_prod"]
