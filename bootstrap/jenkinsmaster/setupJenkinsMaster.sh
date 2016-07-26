@@ -25,7 +25,7 @@ echo 'localhost' | sudo tee --append /etc/ansible/hosts
 sudo ansible jenkinsmaster -m ping
 
 sudo ansible-galaxy install geerlingguy.jenkins
-sudo tar zxf /perm/jenkins_state.tar.gz -C /
+sudo tar zxf /perm/jenkins_state.tar.gz -C /var/lib/jenkins
 sudo rm -rf /var/lib/jenkins/jobs/devopskata_ci_project
 sudo rm -rf /var/lib/jenkins/jobs/JenkinsTestProject
 sudo ansible-playbook /home/ec2-user/devopskata/bootstrap/jenkinsmaster/startJenkins.yml
