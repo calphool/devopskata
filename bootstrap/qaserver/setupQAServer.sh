@@ -1,5 +1,8 @@
 #!/bin/sh
 
+echo 'Defaults !requiretty' | sudo tee --append /etc/sudoers
+echo 'jenkins ALL=(ALL) NOPASSWD: ALL' | sudo tee --append /etc/sudoers
+
 sudo mkdir /perm  2> /dev/null
 sudo mount /dev/xvdh /perm  2> /dev/null
 sudo yum -y update
