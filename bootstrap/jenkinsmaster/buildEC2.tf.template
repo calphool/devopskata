@@ -1,4 +1,4 @@
-*
+/*
 *  Provision into AWS cloud, using environment variables for config -- see https://aws.amazon.com/cli/ for
 *  directions on setting up AWS_CONFIG_FILE, AWS_DEFAULT_REGION, and AWS_PROFILE  (aws configure)
 *
