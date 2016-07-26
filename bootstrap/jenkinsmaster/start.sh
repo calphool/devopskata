@@ -155,6 +155,7 @@ installTerraform
 pathAdd ./tf
 rm ./id_rsa 2> /dev/null
 rm ./id_rsa.pub 2> /dev/null
+terraform graph | dot -Tpng > graph.png 2> /dev/null
 terraform apply
 rm ./id_rsa 2> /dev/null
 rm ./id_rsa.pub 2> /dev/null

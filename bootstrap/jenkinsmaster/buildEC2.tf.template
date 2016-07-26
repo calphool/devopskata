@@ -45,139 +45,6 @@ resource "aws_security_group" "jenkins_securitygroup" {
   }
 }
 
-resource "null_resource" "nrgenkey" {
-    provisioner "local-exec" {
-        command="echo $(crudini --get ~/.aws/credentials $AWS_PROFILE aws_access_key_id):$(crudini --get ~/.aws/credentials $AWS_PROFILE aws_secret_access_key) | openssl enc -aes-128-cbc -a -salt -pass pass:wtf > p"
-    }
-}
-
-/*
-* run jenkins provisioning scripts
-*/
-resource "aws_instance" "jenkinsmaster" {
-    depends_on=["null_resource.nrgenkey"]
-
-    ami = "JENKINSAMI"
-    instance_type = "t2.micro"
-    key_name="devops_1"
-    tags {
-        name = "JenkinsMaster"
-    }
-    connection {
-        user="${connectionuser}"
-        private_key="CONNECTIONKEYFILE"
-    }
-    security_groups = ["${aws_security_group.jenkins_securitygroup.name}"]
-
-    ebs_block_device = {
-        device_name="/dev/xvdh"
-        snapshot_id="PERMSNAPID"
-        delete_on_termination="true"
-        volume_type="gp2"
-    }
-}
-
-
-resource "null_resource" "pushkey_to_jenkins" {
-   depends_on=["aws_instance.jenkinsmaster","null_resource.nrgenkey"]
- 
-   provisioner "file" {
-        source="p"
-        destination="/home/ec2-user/p"
-
-        connection {
-            type = "ssh"
-            user = "ec2-user"
-            private_key="CONNECTIONKEYFILE"
-            host = "${aws_instance.jenkinsmaster.public_dns}"
-        }    
-    }
-}
-resource "null_resource" "pushkey_to_qa" {
-   depends_on=["aws_instance.qaserver","null_resource.nrgenkey"]
- 
-   provisioner "file" {
-        source="p"
-        destination="/home/ec2-user/p"
-
-        connection {
-            type = "ssh"
-            user = "ec2-user"
-            private_key="CONNECTIONKEYFILE"
-            host = "${aws_instance.qaserver.public_dns}"
-        }    
-    }
-}
-resource "null_resource" "pushkey_to_prod" {
-   depends_on=["aws_instance.prodserver","null_resource.nrgenkey"]
- 
-   provisioner "file" {
-        source="p"
-        destination="/home/ec2-user/p"
-
-        connection {
-            type = "ssh"
-            user = "ec2-user"
-            private_key="CONNECTIONKEYFILE"
-            host = "${aws_instance.prodserver.public_dns}"
-        }    
-    }
-}
-resource "null_resource" "pushkey_to_build" {
-   depends_on=["aws_instance.buildserver","null_resource.nrgenkey"]
- 
-   provisioner "file" {
-        source="p"
-        destination="/home/ec2-user/p"
-
-        connection {
-            type = "ssh"
-            user = "ec2-user"
-            private_key="CONNECTIONKEYFILE"
-            host = "${aws_instance.buildserver.public_dns}"
-        }    
-    }
-}
-
-resource "null_resource" "rmkey" {
-    depends_on=["null_resource.pushkey_to_jenkins","null_resource.pushkey_to_qa","null_resource.pushkey_to_build","null_resource.pushkey_to_prod"]
-
-    provisioner "local-exec" {
-        command="rm p"
-    }
-}
-
-resource "null_resource" "jenkinssetup" {
-   depends_on=["null_resource.pushkey_to_jenkins"]
-
-   provisioner "remote-exec" {
-        script="setupJenkinsMaster.sh"
-        connection {
-            type = "ssh"
-            user = "ec2-user"
-            private_key="CONNECTIONKEYFILE"
-            host="${aws_instance.jenkinsmaster.public_dns}"
-        }
-    }
-}
-
-output "jenkinsmaster_public_ip" {
-    value = "${aws_instance.jenkinsmaster.public_ip}"
-}
-
-output "buildserver_public_ip" {
-    value = "${aws_instance.buildserver.public_ip}"
-}
-
-output "qaserver_public_ip" {
-    value = "${aws_instance.qaserver.public_ip}"
-}
-
-output "prodserver_public_ip" {
-    value = "${aws_instance.prodserver.public_ip}"
-}
-
-
 
 resource "aws_security_group" "slave_securitygroup" {
   name = "slave-securitygroup"
@@ -212,6 +79,7 @@ resource "aws_security_group" "slave_securitygroup" {
 * Bring up build server
 */
 resource "aws_instance" "buildserver" {
+
     ami = "BUILDSERVERAMI"
     instance_type = "t2.micro"
     key_name="devops_1"
@@ -224,14 +92,6 @@ resource "aws_instance" "buildserver" {
     }
     security_groups = ["${aws_security_group.slave_securitygroup.name}"]
 
-    provisioner "remote-exec" {
-        script = "../buildserver/setupBuildServer.sh"
-        connection {
-            type = "ssh"
-            user = "ec2-user"
-            private_key="CONNECTIONKEYFILE"
-        }
-    }
     ebs_block_device = {
         device_name="/dev/xvdh"
         snapshot_id="PERMSNAPID"
@@ -245,6 +105,7 @@ resource "aws_instance" "buildserver" {
 * Bring up qa server
 */
 resource "aws_instance" "qaserver" {
+
     ami = "QASERVERAMI"
     instance_type = "t2.micro"
     key_name="devops_1"
@@ -257,14 +118,6 @@ resource "aws_instance" "qaserver" {
     }
     security_groups = ["${aws_security_group.slave_securitygroup.name}"]
 
-    provisioner "remote-exec" {
-        script="../qaserver/setupQAServer.sh"
-        connection {
-            type = "ssh"
-            user = "ec2-user"
-            private_key="CONNECTIONKEYFILE"
-        }
-    }
     ebs_block_device = {
         device_name="/dev/xvdh"
         snapshot_id="PERMSNAPID"
@@ -275,6 +128,7 @@ resource "aws_instance" "qaserver" {
 
 
 resource "aws_instance" "prodserver" {
+
     ami = "PRODSERVERAMI"
     instance_type = "t2.micro"
     key_name="devops_1"
@@ -287,14 +141,6 @@ resource "aws_instance" "prodserver" {
     }
     security_groups = ["${aws_security_group.slave_securitygroup.name}"]
 
-    provisioner "remote-exec" {
-        script="../prodserver/setupProdServer.sh"
-        connection {
-            type = "ssh"
-            user = "ec2-user"
-            private_key="CONNECTIONKEYFILE"
-        }
-    }
     ebs_block_device = {
         device_name="/dev/xvdh"
         snapshot_id="PERMSNAPID"
@@ -302,6 +148,174 @@ resource "aws_instance" "prodserver" {
         volume_type="gp2"
     }
 }
+
+
+/*
+* run jenkins provisioning scripts
+*/
+resource "aws_instance" "jenkinsmaster" {
+    depends_on=["null_resource.nrgenkey"]
+
+    ami = "JENKINSAMI"
+    instance_type = "t2.micro"
+    key_name="devops_1"
+    tags {
+        name = "JenkinsMaster"
+    }
+    connection {
+        user="${connectionuser}"
+        private_key="CONNECTIONKEYFILE"
+    }
+    security_groups = ["${aws_security_group.jenkins_securitygroup.name}"]
+
+    ebs_block_device = {
+        device_name="/dev/xvdh"
+        snapshot_id="PERMSNAPID"
+        delete_on_termination="true"
+        volume_type="gp2"
+    }
+}
+
+
+resource "null_resource" "nrgenkey" {
+    provisioner "local-exec" {
+        command="echo $(crudini --get ~/.aws/credentials $AWS_PROFILE aws_access_key_id):$(crudini --get ~/.aws/credentials $AWS_PROFILE aws_secret_access_key) | openssl enc -aes-128-cbc -a -salt -pass pass:wtf > p"
+    }
+}
+
+
+
+resource "null_resource" "pushkey_to_jenkins" {
+   depends_on=["aws_instance.jenkinsmaster","null_resource.nrgenkey"]
+ 
+   provisioner "file" {
+        source="p"
+        destination="/home/ec2-user/p"
+
+        connection {
+            type = "ssh"
+            user = "ec2-user"
+            private_key="CONNECTIONKEYFILE"
+            host = "${aws_instance.jenkinsmaster.public_dns}"
+        }    
+    }
+}
+
+
+resource "null_resource" "pushkey_to_qa" {
+   depends_on=["aws_instance.qaserver","null_resource.nrgenkey"]
+ 
+   provisioner "file" {
+        source="p"
+        destination="/home/ec2-user/p"
+
+        connection {
+            type = "ssh"
+            user = "ec2-user"
+            private_key="CONNECTIONKEYFILE"
+            host = "${aws_instance.qaserver.public_dns}"
+        }    
+    }
+}
+
+
+resource "null_resource" "pushkey_to_prod" {
+   depends_on=["aws_instance.prodserver","null_resource.nrgenkey"]
+ 
+   provisioner "file" {
+        source="p"
+        destination="/home/ec2-user/p"
+
+        connection {
+            type = "ssh"
+            user = "ec2-user"
+            private_key="CONNECTIONKEYFILE"
+            host = "${aws_instance.prodserver.public_dns}"
+        }    
+    }
+}
+
+
+resource "null_resource" "pushkey_to_build" {
+   depends_on=["aws_instance.buildserver","null_resource.nrgenkey"]
+ 
+   provisioner "file" {
+        source="p"
+        destination="/home/ec2-user/p"
+
+        connection {
+            type = "ssh"
+            user = "ec2-user"
+            private_key="CONNECTIONKEYFILE"
+            host = "${aws_instance.buildserver.public_dns}"
+        }    
+    }
+}
+
+resource "null_resource" "rmkey" {
+    depends_on=["null_resource.pushkey_to_jenkins","null_resource.pushkey_to_qa","null_resource.pushkey_to_build","null_resource.pushkey_to_prod"]
+
+    provisioner "local-exec" {
+        command="rm p"
+    }
+}
+
+
+
+resource "null_resource" "jenkinssetup" {
+   depends_on=["null_resource.pushkey_to_jenkins"]
+
+   provisioner "remote-exec" {
+        script="setupJenkinsMaster.sh"
+        connection {
+            type = "ssh"
+            user = "ec2-user"
+            private_key="CONNECTIONKEYFILE"
+            host="${aws_instance.jenkinsmaster.public_dns}"
+        }
+    }
+}
+
+resource "null_resource" "qasetup" {
+   depends_on=["null_resource.pushkey_to_qa"]
+
+   provisioner "remote-exec" {
+        script="../qaserver/setupQAServer.sh"
+        connection {
+            type = "ssh"
+            user = "ec2-user"
+            private_key="CONNECTIONKEYFILE"
+            host="${aws_instance.qaserver.public_dns}"
+        }
+    }
+}
+resource "null_resource" "prodsetup" {
+   depends_on=["null_resource.pushkey_to_prod"]
+
+   provisioner "remote-exec" {
+        script="../prodserver/setupProdServer.sh"
+        connection {
+            type = "ssh"
+            user = "ec2-user"
+            private_key="CONNECTIONKEYFILE"
+            host="${aws_instance.prodserver.public_dns}"
+        }
+    }
+}
+resource "null_resource" "buildsetup" {
+   depends_on=["null_resource.pushkey_to_build"]
+
+   provisioner "remote-exec" {
+        script="../buildserver/setupBuildServer.sh"
+        connection {
+            type = "ssh"
+            user = "ec2-user"
+            private_key="CONNECTIONKEYFILE"
+            host="${aws_instance.buildserver.public_dns}"
+        }
+    }
+}
+
 
 
 
@@ -320,7 +334,6 @@ resource "null_resource" "nlr1_updatewebhook" {
 * Generate a public/private key pair locally
 */
 resource "null_resource" "nlr2_genkeylocally" {
-    depends_on=["null_resource.nlr1_updatewebhook"]
 
     provisioner "local-exec" {
         command = "ssh-keygen -f ./id_rsa -N '' -t rsa -b 4096 -C 'somekey@hotmail.com' ; ssh-keygen -y -f ./id_rsa > id_rsa.pub"
@@ -342,7 +355,6 @@ resource "null_resource" "nlr3_pushprivkeytojenkins" {
         source = "./id_rsa"
         destination = "/home/ec2-user/id_rsa"
     }
-
 }
 
 
@@ -490,9 +502,7 @@ resource "null_resource" "turn_on_qa_slave_agent" {
                  "null_resource.hosts_for_prodserver",
                  "null_resource.hosts_for_buildserver",
                  "null_resource.jenkinssetup",
-                 "aws_instance.qaserver",
-                 "aws_instance.buildserver",
-                 "aws_instance.prodserver"]
+                 "null_resource.qasetup"]
    
      provisioner "remote-exec" {
          inline = [
@@ -513,9 +523,7 @@ resource "null_resource" "turn_on_prod_slave_agent" {
                  "null_resource.hosts_for_prodserver",
                  "null_resource.hosts_for_buildserver",
                  "null_resource.jenkinssetup",
-                 "aws_instance.qaserver",
-                 "aws_instance.buildserver",
-                 "aws_instance.prodserver"]
+                 "null_resource.prodsetup"]
    
      provisioner "remote-exec" {
          inline = [
@@ -537,9 +545,7 @@ resource "null_resource" "turn_on_build_slave_agent" {
                  "null_resource.hosts_for_prodserver",
                  "null_resource.hosts_for_buildserver",
                  "null_resource.jenkinssetup",
-                 "aws_instance.qaserver",
-                 "aws_instance.prodserver",
-                 "aws_instance.buildserver"]
+                 "null_resource.buildsetup"]
    
      provisioner "remote-exec" {
          inline = [
@@ -553,4 +559,23 @@ resource "null_resource" "turn_on_build_slave_agent" {
             host = "${aws_instance.buildserver.public_dns}"
         }
      }
+}
+
+
+
+
+output "jenkinsmaster_public_ip" {
+    value = "${aws_instance.jenkinsmaster.public_ip}"
+}
+
+output "buildserver_public_ip" {
+    value = "${aws_instance.buildserver.public_ip}"
+}
+
+output "qaserver_public_ip" {
+    value = "${aws_instance.qaserver.public_ip}"
+}
+
+output "prodserver_public_ip" {
+    value = "${aws_instance.prodserver.public_ip}"
 }
