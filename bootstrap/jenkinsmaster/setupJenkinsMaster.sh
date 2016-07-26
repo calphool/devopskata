@@ -12,4 +12,27 @@ sudo yum -y install wget
 sudo yum -y install git
 sudo rm -rf ~/devopskata 
 sudo git clone https://github.com/calphool/devopskata.git
-sudo ./devopskata/bootstrap/jenkinsmaster/provisionAnsibleOnJenkinsMaster.sh
+
+sudo ./../shared/setupAnsible.sh
+gem install cucumber &
+gem install selenium &
+/usr/local/bin/selenium install
+
+sudo mkdir -p /etc/ansible
+echo 'localhost ansible_connection=local' | sudo tee --append /etc/ansible/hosts
+echo '[jenkinsmaster]' | sudo tee --append /etc/ansible/hosts
+echo 'localhost' | sudo tee --append /etc/ansible/hosts
+sudo ansible jenkinsmaster -m ping
+
+sudo ansible-galaxy install geerlingguy.jenkins
+sudo tar zxf /perm/jenkins_state.tar.gz -C /
+sudo rm -rf /var/lib/jenkins/jobs/devopskata_ci_project
+sudo rm -rf /var/lib/jenkins/jobs/JenkinsTestProject
+sudo ansible-playbook /home/ec2-user/devopskata/bootstrap/jenkinsmaster/startJenkins.yml
+echo 'Defaults:jenkins !requiretty' | sudo tee --append /etc/sudoers
+echo 'jenkins ALL=(ALL) NOPASSWD: ALL' | sudo tee --append /etc/sudoers
+./../shared/setupS3.sh jenkinsmaster
+cd /home/ec2-user/s3;sudo cp -R -v . /var/lib/jenkins/
+sudo chown -hRv jenkins:jenkins /var/lib/jenkins/jobs
+sudo /etc/init.d/jenkins restart
+sudo rm /home/ec2-user/p
