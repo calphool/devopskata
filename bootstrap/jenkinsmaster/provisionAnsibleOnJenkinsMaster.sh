@@ -36,14 +36,7 @@ sudo rm -rf /var/lib/jenkins/jobs/JenkinsTestProject
 sudo ansible-playbook /home/ec2-user/devopskata/bootstrap/jenkinsmaster/startJenkins.yml
 echo 'Defaults:jenkins !requiretty' | sudo tee --append /etc/sudoers
 echo 'jenkins ALL=(ALL) NOPASSWD: ALL' | sudo tee --append /etc/sudoers
-sudo ansible-galaxy install calphool.s3fs
-sudo ansible-playbook /home/ec2-user/devopskata/bootstrap/jenkinsmaster/startS3fs.yml
-echo 'user_allow_other' | sudo tee --append /etc/fuse.conf
-sudo umount -f /home/ec2-user/s3 
-sudo rm -rf /home/ec2-user/s3 
-sudo mkdir -p /home/ec2-user/s3
-sudo s3fs calphoolbucket /home/ec2-user/s3 -o passwd_file=/home/ec2-user/q -o allow_other
-sleep 2
+./../shared/setupS3.sh jenkinsmaster
 cd /home/ec2-user/s3;sudo cp -R -v . /var/lib/jenkins/
 sudo chown -hRv jenkins:jenkins /var/lib/jenkins/jobs
 sudo /etc/init.d/jenkins restart

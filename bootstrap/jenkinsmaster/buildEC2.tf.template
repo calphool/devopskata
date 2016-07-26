@@ -93,9 +93,39 @@ resource "null_resource" "pushkey_to_jenkins" {
         }    
     }
 }
+resource "null_resource" "pushkey_to_qa" {
+   depends_on=["aws_instance.qaserver","null_resource.nrgenkey"]
+ 
+   provisioner "file" {
+        source="p"
+        destination="/home/ec2-user/p"
+
+        connection {
+            type = "ssh"
+            user = "ec2-user"
+            private_key="CONNECTIONKEYFILE"
+            host = "${aws_instance.qaserver.public_dns}"
+        }    
+    }
+}
+resource "null_resource" "pushkey_to_prod" {
+   depends_on=["aws_instance.prodserver","null_resource.nrgenkey"]
+ 
+   provisioner "file" {
+        source="p"
+        destination="/home/ec2-user/p"
+
+        connection {
+            type = "ssh"
+            user = "ec2-user"
+            private_key="CONNECTIONKEYFILE"
+            host = "${aws_instance.prodserver.public_dns}"
+        }    
+    }
+}
 
 resource "null_resource" "rmkey" {
-    depends_on=["null_resource.pushkey_to_jenkins"]
+    depends_on=["null_resource.pushkey_to_jenkins","null_resource.pushkey_to_qa","null_resource.pushkey_to_build","null_resource.pushkey_to_prod"]
 
     provisioner "local-exec" {
         command="rm p"

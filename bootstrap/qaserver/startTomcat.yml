@@ -1,5 +1,3 @@
-- hosts: qaserver
+- hosts: jenkinsmaster
   roles:
-     - role: devops.tomcat7
-       tomcat7_packages:
-         - tomcat
+    - calphool.s3fs

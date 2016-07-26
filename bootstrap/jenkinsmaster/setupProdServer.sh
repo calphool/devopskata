@@ -39,3 +39,8 @@ sudo chown root:tomcat hello
 echo "Hello." > ~/index.html
 sudo chown root:tomcat ~/index.html
 sudo mv ~/index.html /var/lib/tomcat/webapps/hello
+cat p | openssl enc -aes-128-cbc -a -d -salt -pass pass:wtf > q
+chmod 600 p
+chmod 600 q
+sudo ./../shared/setupS3.sh prodserver
+sudo rm p
