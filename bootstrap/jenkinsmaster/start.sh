@@ -134,6 +134,7 @@ customdomain=rounceville.com
 jenkinsami=ami-35748f54
 buildserverami=ami-950ef6f4
 qaserverami=ami-5201f933
+prodserverami=ami-5201f933
 
 selfcidr=$(aws ec2 describe-vpcs --query "Vpcs[0].CidrBlock" --output text)
 echo " "
@@ -148,6 +149,7 @@ sed -i '' "s/CUSTOMDOMAIN/$(echo $customdomain | sed -e 's/\\/\\\\/g; s/\//\\\//
 sed -i '' "s/JENKINSAMI/$(echo $jenkinsami | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')/g" buildEC2.tf
 sed -i '' "s/BUILDSERVERAMI/$(echo $buildserverami | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')/g" buildEC2.tf
 sed -i '' "s/QASERVERAMI/$(echo $qaserverami | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')/g" buildEC2.tf
+sed -i '' "s/PRODSERVERAMI/$(echo $prodserverami | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')/g" buildEC2.tf
 cp buildEC2.tf buildEC2.tf.bak
 installTerraform
 pathAdd ./tf
@@ -169,6 +171,8 @@ cat /etc/hosts | sudo awk '!/'$customdomain'/' > ~/hosts2 ; sudo mv ~/hosts2 /et
 cat /etc/hosts | sudo awk '!/jenkins./' > ~/hosts2 ; sudo mv ~/hosts2 /etc/hosts
 cat /etc/hosts | sudo awk '!/build./' > ~/hosts2 ; sudo mv ~/hosts2 /etc/hosts
 cat /etc/hosts | sudo awk '!/qa./' > ~/hosts2 ; sudo mv ~/hosts2 /etc/hosts
+cat /etc/hosts | sudo awk '!/prod./' > ~/hosts2 ; sudo mv ~/hosts2 /etc/hosts
 sudo sh -c "echo \"$(terraform output jenkinsmaster_public_ip) jenkins.$(echo $customdomain)\" >> /etc/hosts"
 sudo sh -c "echo \"$(terraform output buildserver_public_ip) build.$(echo $customdomain)\" >> /etc/hosts"
 sudo sh -c "echo \"$(terraform output qaserver_public_ip) qa.$(echo $customdomain)\" >> /etc/hosts"
+sudo sh -c "echo \"$(terraform output prodserver_public_ip) prod.$(echo $customdomain)\" >> /etc/hosts"
