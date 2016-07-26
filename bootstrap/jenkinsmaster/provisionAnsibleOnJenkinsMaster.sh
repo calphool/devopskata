@@ -31,6 +31,8 @@ echo 'localhost' | sudo tee --append /etc/ansible/hosts
 sudo ansible jenkinsmaster -m ping
 sudo ansible-galaxy install geerlingguy.jenkins
 sudo tar zxf /perm/jenkins_state.tar.gz -C /
+sudo rm -rf /var/lib/jenkins/jobs/devopskata_ci_project
+sudo rm -rf /var/lib/jenkins/jobs/JenkinsTestProject
 sudo ansible-playbook /home/ec2-user/devopskata/bootstrap/jenkinsmaster/startJenkins.yml
 echo 'Defaults:jenkins !requiretty' | sudo tee --append /etc/sudoers
 echo 'jenkins ALL=(ALL) NOPASSWD: ALL' | sudo tee --append /etc/sudoers
