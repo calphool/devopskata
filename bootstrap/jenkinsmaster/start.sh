@@ -129,12 +129,12 @@ fi
 # actual execution starts here
 SECONDS=0
 
-snapid=snap-ab0adb44
+permsnapid=snap-ab0adb44
 customdomain=rounceville.com
-jenkinsami=ami-35748f54
-buildserverami=ami-950ef6f4
-qaserverami=ami-5201f933
-prodserverami=ami-5201f933
+jenkinsami=ami-dbff05ba
+buildserverami=ami-c7f208a6
+qaserverami=ami-a2ff05c3
+prodserverami=ami-daff05bb
 
 selfcidr=$(aws ec2 describe-vpcs --query "Vpcs[0].CidrBlock" --output text)
 echo " "
@@ -144,7 +144,7 @@ sed -i '' "s/GITHUB_REPONAME/$(echo $ghRepoName | sed -e 's/\\/\\\\/g; s/\//\\\/
 sed -i '' "s/GITHUB_USER/$(echo $ghUser | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')/g" buildEC2.tf
 sed -i '' "s/GITHUB_PWD/$(echo $passwe | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')/g" buildEC2.tf
 sed -i '' "s/CONNECTIONKEYFILE/$(echo $pfPath | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')/g" buildEC2.tf
-sed -i '' "s/PERMSNAPID/$(echo $snapid | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')/g" buildEC2.tf
+sed -i '' "s/PERMSNAPID/$(echo $permsnapid | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')/g" buildEC2.tf
 sed -i '' "s/CUSTOMDOMAIN/$(echo $customdomain | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')/g" buildEC2.tf
 sed -i '' "s/JENKINSAMI/$(echo $jenkinsami | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')/g" buildEC2.tf
 sed -i '' "s/BUILDSERVERAMI/$(echo $buildserverami | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')/g" buildEC2.tf
