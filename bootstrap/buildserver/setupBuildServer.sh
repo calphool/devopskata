@@ -28,5 +28,5 @@ sudo ansible buildserver -m ping
 cat p | openssl enc -aes-128-cbc -a -d -salt -pass pass:wtf > q
 chmod 600 p
 chmod 600 q
-sudo ./../shared/setupS3.sh buildserver
+sudo ./home/ec2-user/devopskata/bootstrap/shared/setupS3.sh buildserver
 sudo rm p
