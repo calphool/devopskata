@@ -131,7 +131,7 @@ SECONDS=0
 
 permsnapid=snap-7bcd3640
 customdomain=rounceville.com
-jenkinsami=ami-dbff05ba
+jenkinsami=ami-a01ee4c1
 buildserverami=ami-c7f208a6
 qaserverami=ami-a2ff05c3
 prodserverami=ami-daff05bb
