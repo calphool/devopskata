@@ -47,7 +47,7 @@ gem install selenium
 gem install headless &
 
 # ruby tooling for watir
-yum -y install gcc ruby-devel rubygems
+sudo yum -y install gcc ruby-devel rubygems
 
 # get watir-webdriver
 gem install watir-webdriver &
