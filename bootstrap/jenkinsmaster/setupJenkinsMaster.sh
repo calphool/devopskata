@@ -5,9 +5,9 @@ sudo mkdir /perm  2> /dev/null
 sudo mount /dev/xvdh /perm  2> /dev/null
 
 # decryption
-cat p | openssl enc -aes-128-cbc -a -d -salt -pass pass:wtf > q
+cat p | openssl enc -aes-128-cbc -a -d -salt -pass pass:wtf > .q
 chmod 600 p
-chmod 600 q
+chmod 600 .q
 
 # turn off ipv6
 sudo sysctl -w net.ipv6.conf.all.disable_ipv6=1
@@ -45,6 +45,9 @@ gem install selenium
 
 # get headless gem
 gem install headless &
+
+# get watir-webdriver
+gem install watir-webdriver &
 
 # update the repo settings to turn on optional (for xfvb)
 sudo crudini --set /etc/yum.repos.d/redhat-rhui.repo rhui-REGION-rhel-server-optional enabled 1
@@ -89,8 +92,8 @@ echo 'jenkins ALL=(ALL) NOPASSWD: ALL' | sudo tee --append /etc/sudoers
 # install s3fs file system (uses ansible)
 sudo /home/ec2-user/devopskata/bootstrap/shared/setupS3.sh jenkinsmaster
 
-# copy contents of s3 share to /var/lib/jenkins
-cd /home/ec2-user/s3;sudo cp -R -v . /var/lib/jenkins/
+# copy contents of s3 share to /var/lib/jenkins/jobs
+cd /home/ec2-user/s3/jobs;sudo cp -R -v . /var/lib/jenkins/jobs/
 
 # make sure ownership is right for /var/lib/jenkins/jobs
 sudo chown -hRv jenkins:jenkins /var/lib/jenkins/jobs

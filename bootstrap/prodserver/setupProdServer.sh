@@ -33,8 +33,8 @@ sudo chown root:tomcat ~/index.html
 sudo mv ~/index.html /var/lib/tomcat/webapps/hello
 
 cd ~
-cat p | openssl enc -aes-128-cbc -a -d -salt -pass pass:wtf > q
+cat p | openssl enc -aes-128-cbc -a -d -salt -pass pass:wtf > .q
 chmod 600 p
-chmod 600 q
+chmod 600 .q
 sudo /home/ec2-user/devopskata/bootstrap/shared/setupS3.sh prodserver
 sudo rm p
