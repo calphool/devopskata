@@ -55,6 +55,9 @@ sudo yum install xorg-x11-server-Xvfb.x86_64 -y &
 # install firefox
 sudo yum install firefox.x86_64 -y &
 
+# install imageMagick
+sudo yum install ImageMagick.x86_64 -y &
+
 # assure /etc/ansible exists for role installation
 sudo mkdir -p /etc/ansible
 
