@@ -43,6 +43,9 @@ gem install selenium
 # make sure selenium install runs
 /usr/local/bin/selenium install &
 
+# get headless gem
+gem install headless &
+
 # update the repo settings to turn on optional (for xfvb)
 sudo crudini --set /etc/yum.repos.d/redhat-rhui.repo rhui-REGION-rhel-server-optional enabled 1
 
