@@ -47,16 +47,16 @@ sudo /home/ec2-user/devopskata/bootstrap/shared/setupAnsible.sh
 gem install cucumber 
 
 # assure selenium is installed
-gem install selenium 
+#gem install selenium 
 
 # make sure selenium install runs
 /usr/local/bin/selenium install 
 
 # get headless gem
-gem install headless 
+#gem install headless 
 
 # get watir-webdriver
-gem install watir-webdriver 
+#gem install watir-webdriver 
 
 # install xvfb
 sudo yum install xorg-x11-server-Xvfb.x86_64 -y 
