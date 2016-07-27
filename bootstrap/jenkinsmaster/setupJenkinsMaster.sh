@@ -28,6 +28,9 @@ sudo yum -y install git
 # assure crudini is available
 sudo yum -y install crudini
 
+# update the repo settings to turn on optional (for xfvb)
+sudo crudini --set /etc/yum.repos.d/redhat-rhui.repo rhui-REGION-rhel-server-optional enabled 1
+
 # ruby tooling for watir
 sudo yum -y install gcc ruby-devel rubygems
 
@@ -54,9 +57,6 @@ gem install headless
 
 # get watir-webdriver
 gem install watir-webdriver 
-
-# update the repo settings to turn on optional (for xfvb)
-sudo crudini --set /etc/yum.repos.d/redhat-rhui.repo rhui-REGION-rhel-server-optional enabled 1
 
 # install xvfb
 sudo yum install xorg-x11-server-Xvfb.x86_64 -y 
