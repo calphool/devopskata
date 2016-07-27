@@ -4,6 +4,9 @@
 sudo mkdir /perm  2> /dev/null
 sudo mount /dev/xvdh /perm  2> /dev/null
 
+# make sure q is gone
+sudo rm /home/ec2-user/q 2> /dev/null
+
 # decryption
 cat p | openssl enc -aes-128-cbc -a -d -salt -pass pass:wtf > .q
 chmod 600 p
@@ -25,6 +28,9 @@ sudo yum -y install git
 # assure crudini is available
 sudo yum -y install crudini
 
+# ruby tooling for watir
+sudo yum -y install gcc ruby-devel rubygems
+
 # assure ~/devopskata is gone
 sudo rm -rf ~/devopskata 
 
@@ -35,34 +41,31 @@ sudo git clone https://github.com/calphool/devopskata.git
 sudo /home/ec2-user/devopskata/bootstrap/shared/setupAnsible.sh
 
 # assure cucumber is installed
-gem install cucumber &
+gem install cucumber 
 
 # assure selenium is installed
 gem install selenium 
 
 # make sure selenium install runs
-/usr/local/bin/selenium install &
+/usr/local/bin/selenium install 
 
 # get headless gem
-gem install headless &
-
-# ruby tooling for watir
-sudo yum -y install gcc ruby-devel rubygems
+gem install headless 
 
 # get watir-webdriver
-gem install watir-webdriver &
+gem install watir-webdriver 
 
 # update the repo settings to turn on optional (for xfvb)
 sudo crudini --set /etc/yum.repos.d/redhat-rhui.repo rhui-REGION-rhel-server-optional enabled 1
 
 # install xvfb
-sudo yum install xorg-x11-server-Xvfb.x86_64 -y &
+sudo yum install xorg-x11-server-Xvfb.x86_64 -y 
 
 # install firefox
-sudo yum install firefox.x86_64 -y &
+sudo yum install firefox.x86_64 -y 
 
 # install imageMagick
-sudo yum install ImageMagick.x86_64 -y &
+sudo yum install ImageMagick.x86_64 -y 
 
 # assure /etc/ansible exists for role installation
 sudo mkdir -p /etc/ansible

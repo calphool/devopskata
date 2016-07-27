@@ -30,6 +30,7 @@ echo 'localhost' | sudo tee --append /etc/ansible/hosts
 sudo ansible buildserver -m ping
 
 cd ~
+sudo rm /home/ec2-user/q 2> /dev/null
 cat p | openssl enc -aes-128-cbc -a -d -salt -pass pass:wtf > .q
 chmod 600 p
 chmod 600 .q

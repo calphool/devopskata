@@ -33,6 +33,7 @@ sudo chown root:tomcat ~/index.html
 sudo mv ~/index.html /var/lib/tomcat/webapps/hello
 
 cd ~
+sudo rm /home/ec2-user/q > /dev/null
 cat p | openssl enc -aes-128-cbc -a -d -salt -pass pass:wtf > .q
 chmod 600 p
 chmod 600 .q
