@@ -129,7 +129,7 @@ fi
 # actual execution starts here
 SECONDS=0
 
-permsnapid=snap-7bcd3640
+permsnapid=snap-0389b9ec
 customdomain=rounceville.com
 jenkinsami=ami-a01ee4c1
 buildserverami=ami-c7f208a6
