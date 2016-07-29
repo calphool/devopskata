@@ -17,7 +17,7 @@ sudo sysctl -w net.ipv6.conf.all.disable_ipv6=1
 sudo sysctl -w net.ipv6.conf.default.disable_ipv6=1
 
 # update yum
-#sudo yum -y update
+sudo yum -y update --exclude java-1.7.0-openjdk*
 
 # assure wget is available
 sudo yum -y install wget
@@ -50,7 +50,7 @@ gem install cucumber
 #gem install selenium 
 
 # make sure selenium install runs
-/usr/local/bin/selenium install 
+#/usr/local/bin/selenium install 
 
 # get headless gem
 #gem install headless 
