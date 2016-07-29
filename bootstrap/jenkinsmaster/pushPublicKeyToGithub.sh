@@ -17,7 +17,7 @@ output=($(curl -s -H "Content-Type: application/json" -X GET -u $2:$passw https:
 keydata=$(cat ./id_rsa.pub)
 str1='{"title": "key-'
 str1a=$str1$4"\", \"key\": "
-str2=\"$keydata'", "read_only": true }'
+str2=\"$keydata'", "read_only": false }'
 str3=$str1a$str2
 echo $str3 > tmp.txt
 curl -s -H "Content-Type: application/json" -X POST -u $2:$passw https://api.github.com/repos/$2/$1/keys --data @tmp.txt
