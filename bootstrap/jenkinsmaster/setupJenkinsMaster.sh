@@ -50,17 +50,17 @@ echo 'jenkins ALL=(ALL) NOPASSWD: ALL' | sudo tee --append /etc/sudoers
 
 # Pull data out of s3 for jenkins
 
-$DIRECTORY="/home/ec2-user/s3/jenkins/jobs"
+DIRECTORY="/home/ec2-user/s3/jenkins/jobs"
 if [ -d "$DIRECTORY" ]; then
 	sudo cp -R -v /home/ec2-user/s3/jenkins/jobs /var/lib/jenkins/jobs/
 fi
 
-$DIRECTORY="/home/ec2-user/s3/jenkins/plugins"
+DIRECTORY="/home/ec2-user/s3/jenkins/plugins"
 if [ -d "$DIRECTORY" ]; then
 	sudo cp -R -v /home/ec2-user/s3/jenkins/plugins /var/lib/jenkins/plugins
 fi
 
-$DIRECTORY="/home/ec2-user/s3/jenkins"
+DIRECTORY="/home/ec2-user/s3/jenkins"
 if [ -d "$DIRECTORY" ]; then
 	sudo cp -R -v /home/ec2-user/s3/jenkins /var/lib/jenkins
 fi
