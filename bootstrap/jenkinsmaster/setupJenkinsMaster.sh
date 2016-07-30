@@ -49,24 +49,10 @@ echo 'jenkins ALL=(ALL) NOPASSWD: ALL' | sudo tee --append /etc/sudoers
 
 
 # Pull data out of s3 for jenkins
-
-DIRECTORY="/home/ec2-user/s3/jenkins/jobs"
-if [ -d "$DIRECTORY" ]; then
-	sudo cp -R -v /home/ec2-user/s3/jenkins/jobs /var/lib/jenkins/jobs/
-fi
-
-DIRECTORY="/home/ec2-user/s3/jenkins/plugins"
-if [ -d "$DIRECTORY" ]; then
-	sudo cp -R -v /home/ec2-user/s3/jenkins/plugins /var/lib/jenkins/plugins
-fi
-
-DIRECTORY="/home/ec2-user/s3/jenkins"
-if [ -d "$DIRECTORY" ]; then
-	sudo cp -R -v /home/ec2-user/s3/jenkins /var/lib/jenkins
-fi
+sudo rsync -avm --exclude="**/builds/**" /home/ec2-user/s3/jenkins /var/lib
 
 # make sure ownership is right for /var/lib/jenkins/jobs
-sudo chown -hRv jenkins:jenkins /var/lib/jenkins/jobs
+sudo chown -hRv jenkins:jenkins /var/lib/jenkins
 
 # restart jenkins
 sudo /etc/init.d/jenkins restart

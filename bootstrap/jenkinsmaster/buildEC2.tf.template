@@ -512,7 +512,7 @@ resource "null_resource" "turn_on_qa_slave_agent" {
      provisioner "remote-exec" {
          inline = [
               "cd ~",
-              "nohup java -jar /s3/swarm-client-jar-with-dependencies.jar -deleteExistingClients -description QA_deployment_server -disableClientsUniqueId -labels qa -master http://jenkins.CUSTOMDOMAIN:8080 -username admin -password admin &",
+              "nohup java -jar /home/ec2-user/s3/swarm-client-jar-with-dependencies.jar -deleteExistingClients -description QA_deployment_server -disableClientsUniqueId -labels qa -master http://jenkins.CUSTOMDOMAIN:8080 -username admin -password admin &",
               "sleep 2"
          ]
         connection {
@@ -533,7 +533,7 @@ resource "null_resource" "turn_on_prod_slave_agent" {
      provisioner "remote-exec" {
          inline = [
               "cd ~",
-              "nohup java -jar /s3/swarm-client-jar-with-dependencies.jar -deleteExistingClients -description prod_server -disableClientsUniqueId -labels prod -master http://jenkins.CUSTOMDOMAIN:8080 -username admin -password admin &",
+              "nohup java -jar /home/ec2-user/s3/swarm-client-jar-with-dependencies.jar -deleteExistingClients -description prod_server -disableClientsUniqueId -labels prod -master http://jenkins.CUSTOMDOMAIN:8080 -username admin -password admin &",
               "sleep 2"
          ]
         connection {
@@ -555,7 +555,7 @@ resource "null_resource" "turn_on_build_slave_agent" {
      provisioner "remote-exec" {
          inline = [
               "cd ~",
-              "nohup java -jar /s3/swarm-client-jar-with-dependencies.jar -deleteExistingClients -description Java_build_server -disableClientsUniqueId -labels build -master http://jenkins.CUSTOMDOMAIN:8080 -username admin -password admin &",
+              "nohup java -jar /home/ec2-user/s3/swarm-client-jar-with-dependencies.jar -deleteExistingClients -description Java_build_server -disableClientsUniqueId -labels build -master http://jenkins.CUSTOMDOMAIN:8080 -username admin -password admin &",
               "sleep 2"
          ]
         connection {
