@@ -92,12 +92,6 @@ resource "aws_instance" "buildserver" {
     }
     security_groups = ["${aws_security_group.slave_securitygroup.name}"]
 
-    ebs_block_device = {
-        device_name="/dev/xvdh"
-        snapshot_id="PERMSNAPID"
-        delete_on_termination="true"
-        volume_type="gp2"
-    }
 }
 
 
@@ -118,12 +112,6 @@ resource "aws_instance" "qaserver" {
     }
     security_groups = ["${aws_security_group.slave_securitygroup.name}"]
 
-    ebs_block_device = {
-        device_name="/dev/xvdh"
-        snapshot_id="PERMSNAPID"
-        delete_on_termination="true"
-        volume_type="gp2"
-    }
 }
 
 
@@ -141,12 +129,6 @@ resource "aws_instance" "prodserver" {
     }
     security_groups = ["${aws_security_group.slave_securitygroup.name}"]
 
-    ebs_block_device = {
-        device_name="/dev/xvdh"
-        snapshot_id="PERMSNAPID"
-        delete_on_termination="true"
-        volume_type="gp2"
-    }
 }
 
 
@@ -167,13 +149,6 @@ resource "aws_instance" "jenkinsmaster" {
         private_key="CONNECTIONKEYFILE"
     }
     security_groups = ["${aws_security_group.jenkins_securitygroup.name}"]
-
-    ebs_block_device = {
-        device_name="/dev/xvdh"
-        snapshot_id="PERMSNAPID"
-        delete_on_termination="true"
-        volume_type="gp2"
-    }
 }
 
 
@@ -266,7 +241,7 @@ resource "null_resource" "jenkinssetup" {
    depends_on=["null_resource.pushkey_to_jenkins"]
 
    provisioner "remote-exec" {
-        script="setupJenkinsMaster.sh"
+        script="setupJenkinsMaster.sh S3BUCKETNAME"
         connection {
             type = "ssh"
             user = "ec2-user"
@@ -280,7 +255,7 @@ resource "null_resource" "qasetup" {
    depends_on=["null_resource.pushkey_to_qa"]
 
    provisioner "remote-exec" {
-        script="../qaserver/setupQAServer.sh"
+        script="../qaserver/setupQAServer.sh S3BUCKETNAME"
         connection {
             type = "ssh"
             user = "ec2-user"
@@ -293,7 +268,7 @@ resource "null_resource" "prodsetup" {
    depends_on=["null_resource.pushkey_to_prod"]
 
    provisioner "remote-exec" {
-        script="../prodserver/setupProdServer.sh"
+        script="../prodserver/setupProdServer.sh S3BUCKETNAME"
         connection {
             type = "ssh"
             user = "ec2-user"
@@ -306,7 +281,7 @@ resource "null_resource" "buildsetup" {
    depends_on=["null_resource.pushkey_to_build"]
 
    provisioner "remote-exec" {
-        script="../buildserver/setupBuildServer.sh"
+        script="../buildserver/setupBuildServer.sh S3BUCKETNAME"
         connection {
             type = "ssh"
             user = "ec2-user"
@@ -507,7 +482,7 @@ resource "null_resource" "turn_on_qa_slave_agent" {
      provisioner "remote-exec" {
          inline = [
               "cd ~",
-              "nohup java -jar /perm/swarm-client-jar-with-dependencies.jar -deleteExistingClients -description QA_deployment_server -disableClientsUniqueId -labels qa -master http://jenkins.CUSTOMDOMAIN:8080 -username admin -password admin &",
+              "nohup java -jar /s3/swarm-client-jar-with-dependencies.jar -deleteExistingClients -description QA_deployment_server -disableClientsUniqueId -labels qa -master http://jenkins.CUSTOMDOMAIN:8080 -username admin -password admin &",
               "sleep 2"
          ]
         connection {
@@ -528,7 +503,7 @@ resource "null_resource" "turn_on_prod_slave_agent" {
      provisioner "remote-exec" {
          inline = [
               "cd ~",
-              "nohup java -jar /perm/swarm-client-jar-with-dependencies.jar -deleteExistingClients -description prod_server -disableClientsUniqueId -labels prod -master http://jenkins.CUSTOMDOMAIN:8080 -username admin -password admin &",
+              "nohup java -jar /s3/swarm-client-jar-with-dependencies.jar -deleteExistingClients -description prod_server -disableClientsUniqueId -labels prod -master http://jenkins.CUSTOMDOMAIN:8080 -username admin -password admin &",
               "sleep 2"
          ]
         connection {
@@ -550,7 +525,7 @@ resource "null_resource" "turn_on_build_slave_agent" {
      provisioner "remote-exec" {
          inline = [
               "cd ~",
-              "nohup java -jar /perm/swarm-client-jar-with-dependencies.jar -deleteExistingClients -description Java_build_server -disableClientsUniqueId -labels build -master http://jenkins.CUSTOMDOMAIN:8080 -username admin -password admin &",
+              "nohup java -jar /s3/swarm-client-jar-with-dependencies.jar -deleteExistingClients -description Java_build_server -disableClientsUniqueId -labels build -master http://jenkins.CUSTOMDOMAIN:8080 -username admin -password admin &",
               "sleep 2"
          ]
         connection {

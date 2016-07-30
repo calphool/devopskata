@@ -129,12 +129,12 @@ fi
 # actual execution starts here
 SECONDS=0
 
-permsnapid=snap-0389b9ec
 customdomain=rounceville.com
 jenkinsami=ami-a01ee4c1
 buildserverami=ami-c7f208a6
 qaserverami=ami-a2ff05c3
 prodserverami=ami-daff05bb
+s3bucketname=calphoolbucket
 
 selfcidr=$(aws ec2 describe-vpcs --query "Vpcs[0].CidrBlock" --output text)
 echo " "
@@ -144,12 +144,12 @@ sed -i '' "s/GITHUB_REPONAME/$(echo $ghRepoName | sed -e 's/\\/\\\\/g; s/\//\\\/
 sed -i '' "s/GITHUB_USER/$(echo $ghUser | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')/g" buildEC2.tf
 sed -i '' "s/GITHUB_PWD/$(echo $passwe | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')/g" buildEC2.tf
 sed -i '' "s/CONNECTIONKEYFILE/$(echo $pfPath | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')/g" buildEC2.tf
-sed -i '' "s/PERMSNAPID/$(echo $permsnapid | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')/g" buildEC2.tf
 sed -i '' "s/CUSTOMDOMAIN/$(echo $customdomain | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')/g" buildEC2.tf
 sed -i '' "s/JENKINSAMI/$(echo $jenkinsami | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')/g" buildEC2.tf
 sed -i '' "s/BUILDSERVERAMI/$(echo $buildserverami | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')/g" buildEC2.tf
 sed -i '' "s/QASERVERAMI/$(echo $qaserverami | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')/g" buildEC2.tf
 sed -i '' "s/PRODSERVERAMI/$(echo $prodserverami | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')/g" buildEC2.tf
+sed -i '' "s/S3BUCKETNAME/$(echo $s3bucketname | sed -e 's/\\/\\\\/g; s/\//\\\//g; s/&/\\\&/g')/g" buildEC2.tf
 cp buildEC2.tf buildEC2.tf.bak
 installTerraform
 pathAdd ./tf

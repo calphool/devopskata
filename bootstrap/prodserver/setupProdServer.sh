@@ -1,26 +1,17 @@
 #!/bin/sh
 
+
+# $1 = s3 bucket name
+
+../shared/setupAnyServer.sh prodserver $1
+
 echo 'Defaults !requiretty' | sudo tee --append /etc/sudoers
 echo 'jenkins ALL=(ALL) NOPASSWD: ALL' | sudo tee --append /etc/sudoers
 
-sudo mkdir /perm  2> /dev/null
-sudo mount /dev/xvdh /perm  2> /dev/null
-sudo yum -y update
-sudo yum -y install wget
-sudo yum -y install git
-sudo yum -y install java
+sudo yum -y install java-1.7.0-openjdk-devel.x86_64
 java -version
 cd ~
-sudo rm -rf ~/devopskata
-sudo git clone https://github.com/calphool/devopskata.git
-sudo /home/ec2-user/devopskata/bootstrap/shared/setupAnsible.sh
-sudo mkdir -p /etc/ansible
-sudo echo 'localhost ansible_connection=local' | sudo tee --append /etc/ansible/hosts
-sudo echo '[prodserver]' | sudo tee --append /etc/ansible/hosts
-sudo echo 'localhost' | sudo tee --append /etc/ansible/hosts
-sudo ansible buildserver -m ping
-sudo sysctl -w net.ipv6.conf.all.disable_ipv6=1
-sudo sysctl -w net.ipv6.conf.default.disable_ipv6=1
+
 sudo ansible-galaxy install devops.tomcat7
 sudo ansible-playbook /home/ec2-user/devopskata/bootstrap/prodserver/startTomcat.yml
 
@@ -32,10 +23,6 @@ echo "Hello." > ~/index.html
 sudo chown root:tomcat ~/index.html
 sudo mv ~/index.html /var/lib/tomcat/webapps/hello
 
-cd ~
-sudo rm /home/ec2-user/q > /dev/null
-cat p | openssl enc -aes-128-cbc -a -d -salt -pass pass:wtf > .q
-chmod 600 p
-chmod 600 .q
-sudo /home/ec2-user/devopskata/bootstrap/shared/setupS3.sh prodserver
-sudo rm p
+echo '----------------------------------------------------------------'
+echo " Software customization complete for: prodserver
+echo '----------------------------------------------------------------'
