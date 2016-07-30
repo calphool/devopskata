@@ -240,8 +240,19 @@ resource "null_resource" "rmkey" {
 resource "null_resource" "jenkinssetup" {
    depends_on=["null_resource.pushkey_to_jenkins"]
 
+   provisioner "file" {
+       source="setupJenkinsMaster.sh"
+       destination="setupJenkinsMaster.sh"
+        connection {
+            type = "ssh"
+            user = "ec2-user"
+            private_key="CONNECTIONKEYFILE"
+            host="${aws_instance.jenkinsmaster.public_dns}"
+        }
+   }
+
    provisioner "remote-exec" {
-        script="setupJenkinsMaster.sh S3BUCKETNAME"
+        inline= ["setupJenkinsMaster.sh S3BUCKETNAME"]
         connection {
             type = "ssh"
             user = "ec2-user"
@@ -254,8 +265,19 @@ resource "null_resource" "jenkinssetup" {
 resource "null_resource" "qasetup" {
    depends_on=["null_resource.pushkey_to_qa"]
 
+   provisioner "file" {
+       source="../qaserver/setupQAServer.sh"
+       destination="setupQAServer.sh"
+        connection {
+            type = "ssh"
+            user = "ec2-user"
+            private_key="CONNECTIONKEYFILE"
+            host="${aws_instance.qaserver.public_dns}"
+        }
+   }
+
    provisioner "remote-exec" {
-        script="../qaserver/setupQAServer.sh S3BUCKETNAME"
+        inline=["setupQAServer.sh S3BUCKETNAME"]
         connection {
             type = "ssh"
             user = "ec2-user"
@@ -264,11 +286,24 @@ resource "null_resource" "qasetup" {
         }
     }
 }
+
+
 resource "null_resource" "prodsetup" {
    depends_on=["null_resource.pushkey_to_prod"]
 
+   provisioner "file" {
+       source="../prodserver/setupProdServer.sh"
+       destination="setupProdServer.sh"
+        connection {
+            type = "ssh"
+            user = "ec2-user"
+            private_key="CONNECTIONKEYFILE"
+            host="${aws_instance.prodserver.public_dns}"
+        }
+   }
+
    provisioner "remote-exec" {
-        script="../prodserver/setupProdServer.sh S3BUCKETNAME"
+        inline=["setupProdServer.sh S3BUCKETNAME"]
         connection {
             type = "ssh"
             user = "ec2-user"
@@ -277,11 +312,24 @@ resource "null_resource" "prodsetup" {
         }
     }
 }
+
+
 resource "null_resource" "buildsetup" {
    depends_on=["null_resource.pushkey_to_build"]
 
+   provisioner "file" {
+       source="../buildserver/setupBuildServer.sh"
+       destination="setupBuildServer.sh"
+        connection {
+            type = "ssh"
+            user = "ec2-user"
+            private_key="CONNECTIONKEYFILE"
+            host="${aws_instance.buildserver.public_dns}"
+        }
+   }
+
    provisioner "remote-exec" {
-        script="../buildserver/setupBuildServer.sh S3BUCKETNAME"
+        inline=["setupBuildServer.sh S3BUCKETNAME"]
         connection {
             type = "ssh"
             user = "ec2-user"
