@@ -11,8 +11,8 @@ sudo yum-config-manager --enable rhui-REGION-rhel-server-optional/7Server/x86_64
 sudo yum -y install wget
 
 # add EPEL
-wget http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-7.noarch.rpm
-rpm -ivh epel-release-7-7.noarch.rpm
+sudo wget http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-7.noarch.rpm
+sudo rpm -ivh epel-release-7-7.noarch.rpm
 
 # update yum
 sudo yum -y update --exclude java-1.7.0-openjdk*
