@@ -47,5 +47,5 @@ sudo /home/ec2-user/devopskata/bootstrap/shared/setupS3.sh $1 $2
 
 
 echo '----------------------------------------------------------------'
-echo " Basic server setup complete for: $1 
+echo " Basic server setup complete for: $1                            "
 echo '----------------------------------------------------------------'
