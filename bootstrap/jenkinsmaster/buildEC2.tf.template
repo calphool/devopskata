@@ -252,7 +252,7 @@ resource "null_resource" "jenkinssetup" {
    }
 
    provisioner "remote-exec" {
-        inline= ["/home/ec2-user/setupJenkinsMaster.sh S3BUCKETNAME"]
+        inline= ["chmod +x /home/ec2-user/setupJenkinsMaster.sh","/home/ec2-user/setupJenkinsMaster.sh S3BUCKETNAME"]
         connection {
             type = "ssh"
             user = "ec2-user"
@@ -277,7 +277,7 @@ resource "null_resource" "qasetup" {
    }
 
    provisioner "remote-exec" {
-        inline=["/home/ec2-user/setupQAServer.sh S3BUCKETNAME"]
+        inline=["chmod +x /home/ec2-user/setupQAServer.sh","/home/ec2-user/setupQAServer.sh S3BUCKETNAME"]
         connection {
             type = "ssh"
             user = "ec2-user"
@@ -303,7 +303,7 @@ resource "null_resource" "prodsetup" {
    }
 
    provisioner "remote-exec" {
-        inline=["/home/ec2-user/setupProdServer.sh S3BUCKETNAME"]
+        inline=["chmod +x /home/ec2-user/setupProdServer.sh","/home/ec2-user/setupProdServer.sh S3BUCKETNAME"]
         connection {
             type = "ssh"
             user = "ec2-user"
@@ -329,7 +329,7 @@ resource "null_resource" "buildsetup" {
    }
 
    provisioner "remote-exec" {
-        inline=["/home/ec2-user/setupBuildServer.sh S3BUCKETNAME"]
+        inline=["chmod +x /home/ec2-user/setupBuildServer.sh","/home/ec2-user/setupBuildServer.sh S3BUCKETNAME"]
         connection {
             type = "ssh"
             user = "ec2-user"

@@ -38,14 +38,6 @@ sudo ansible $1 -m ping
 # install s3fs file system (uses ansible)  $1=servername $2=s3 bucketname
 sudo /home/ec2-user/devopskata/bootstrap/shared/setupS3.sh $1 $2
 
-# assure git is available
-sudo yum -y install git
-
-# assure ~/devopskata is gone
-sudo rm -rf ~/devopskata 2> /dev/null 
-
-# clone devopskata.git for various scripts
-sudo git clone https://github.com/calphool/devopskata.git
 
 
 echo '----------------------------------------------------------------'

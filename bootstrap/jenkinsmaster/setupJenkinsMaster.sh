@@ -2,6 +2,17 @@
 
 # $1 = s3 bucket name
 
+# assure git is available
+sudo yum -y install git
+
+# assure ~/devopskata is gone
+sudo rm -rf ~/devopskata 2> /dev/null
+
+# clone devopskata.git for various scripts
+sudo git clone https://github.com/calphool/devopskata.git
+
+cd /home/ec2-user/devopskata/jenkinsmaster
+
 ../shared/setupAnyServer.sh jenkinsmaster $1
 
 # assure crudini is available
@@ -75,5 +86,5 @@ sudo chown -hRv jenkins:jenkins /var/lib/jenkins/jobs
 sudo /etc/init.d/jenkins restart
 
 echo '----------------------------------------------------------------'
-echo " Software customization complete for: jenkinsmaster
+echo " Software customization complete for: jenkinsmaster             '
 echo '----------------------------------------------------------------'
