@@ -13,7 +13,7 @@ sudo git clone https://github.com/calphool/devopskata.git
 cd /home/ec2-user/devopskata/buildserver
 
 # $1=bucketname
-../shared/setupAnyServer.sh buildserver $1
+/home/ec2-user/devopskata/bootstrap/shared/setupAnyServer.sh buildserver $1
 
 echo 'Defaults !requiretty' | sudo tee --append /etc/sudoers
 echo 'jenkins ALL=(ALL) NOPASSWD: ALL' | sudo tee --append /etc/sudoers

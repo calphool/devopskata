@@ -11,9 +11,7 @@ sudo rm -rf ~/devopskata 2> /dev/null
 # clone devopskata.git for various scripts
 sudo git clone https://github.com/calphool/devopskata.git
 
-cd /home/ec2-user/devopskata/qaserver
-
-../shared/setupAnyServer.sh qaserver $1
+/home/ec2-user/devopskata/bootstrap/shared/setupAnyServer.sh qaserver $1
 
 echo 'Defaults !requiretty' | sudo tee --append /etc/sudoers
 echo 'jenkins ALL=(ALL) NOPASSWD: ALL' | sudo tee --append /etc/sudoers
