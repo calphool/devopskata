@@ -4,6 +4,16 @@
 sudo sysctl -w net.ipv6.conf.all.disable_ipv6=1
 sudo sysctl -w net.ipv6.conf.default.disable_ipv6=1
 
+# turn on optional repo
+sudo yum-config-manager --enable rhui-REGION-rhel-server-optional/7Server/x86_64
+
+# make sure wget exists
+sudo yum -y install wget
+
+# add EPEL
+wget http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-7.noarch.rpm
+rpm -ivh epel-release-7-7.noarch.rpm
+
 # update yum
 sudo yum -y update --exclude java-1.7.0-openjdk*
 
@@ -24,8 +34,6 @@ sudo yum -y install crudini
 # update the repo settings to turn on optional (for xfvb)
 sudo crudini --set /etc/yum.repos.d/redhat-rhui.repo rhui-REGION-rhel-server-optional enabled 1
 
-# make sure wget exists
-sudo yum -y install wget
 
 # assure /etc/ansible exists for role installation
 sudo mkdir -p /etc/ansible
