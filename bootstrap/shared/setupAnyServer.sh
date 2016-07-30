@@ -20,6 +20,8 @@ sudo yum -y update --exclude java-1.7.0-openjdk*
 # make sure q is gone
 sudo rm /home/ec2-user/.q 2> /dev/null
 
+cd /home/ec2-user
+
 # decryption
 cat p | openssl enc -aes-128-cbc -a -d -salt -pass pass:wtf > .q
 chmod 600 p

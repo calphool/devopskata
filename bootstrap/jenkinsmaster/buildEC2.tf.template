@@ -132,6 +132,13 @@ resource "aws_instance" "prodserver" {
 }
 
 
+resource "null_resource" "nrgenkey" {
+    provisioner "local-exec" {
+        command="echo $(crudini --get ~/.aws/credentials $AWS_PROFILE aws_access_key_id):$(crudini --get ~/.aws/credentials $AWS_PROFILE aws_secret_access_key) | openssl enc -aes-128-cbc -a -salt -pass pass:wtf > p"
+    }
+}
+
+
 /*
 * run jenkins provisioning scripts
 */
@@ -151,12 +158,6 @@ resource "aws_instance" "jenkinsmaster" {
     security_groups = ["${aws_security_group.jenkins_securitygroup.name}"]
 }
 
-
-resource "null_resource" "nrgenkey" {
-    provisioner "local-exec" {
-        command="echo $(crudini --get ~/.aws/credentials $AWS_PROFILE aws_access_key_id):$(crudini --get ~/.aws/credentials $AWS_PROFILE aws_secret_access_key) | openssl enc -aes-128-cbc -a -salt -pass pass:wtf > p"
-    }
-}
 
 
 
