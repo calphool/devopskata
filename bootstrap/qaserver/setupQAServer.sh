@@ -2,15 +2,6 @@
 
 # $1 = s3 bucket server
 
-# assure git is available
-sudo yum -y install git
-
-# assure ~/devopskata is gone
-sudo rm -rf ~/devopskata 2> /dev/null
-
-# clone devopskata.git for various scripts
-sudo git clone https://github.com/calphool/devopskata.git
-
 /home/ec2-user/devopskata/bootstrap/shared/setupAnyServer.sh qaserver $1
 
 echo 'Defaults !requiretty' | sudo tee --append /etc/sudoers

@@ -240,19 +240,14 @@ resource "null_resource" "rmkey" {
 resource "null_resource" "jenkinssetup" {
    depends_on=["null_resource.pushkey_to_jenkins"]
 
-   provisioner "file" {
-       source="setupJenkinsMaster.sh"
-       destination="/home/ec2-user/setupJenkinsMaster.sh"
-        connection {
-            type = "ssh"
-            user = "ec2-user"
-            private_key="CONNECTIONKEYFILE"
-            host="${aws_instance.jenkinsmaster.public_dns}"
-        }
-   }
-
    provisioner "remote-exec" {
-        inline= ["chmod +x /home/ec2-user/setupJenkinsMaster.sh","/home/ec2-user/setupJenkinsMaster.sh S3BUCKETNAME"]
+        inline= [
+		"cd /home/ec2-user", 
+		"sudo yum -y install git",
+		"sudo rm -rf ~/devopskata 2> /dev/null", 
+		"sudo git clone https://github.com/calphool/devopskata.git",
+		"cd /home/ec2-user/devopskata/jenkinsmaster",
+		"./setupJenkinsMaster.sh S3BUCKETNAME"]
         connection {
             type = "ssh"
             user = "ec2-user"
@@ -265,19 +260,16 @@ resource "null_resource" "jenkinssetup" {
 resource "null_resource" "qasetup" {
    depends_on=["null_resource.pushkey_to_qa"]
 
-   provisioner "file" {
-       source="../qaserver/setupQAServer.sh"
-       destination="/home/ec2-user/setupQAServer.sh"
-        connection {
-            type = "ssh"
-            user = "ec2-user"
-            private_key="CONNECTIONKEYFILE"
-            host="${aws_instance.qaserver.public_dns}"
-        }
-   }
 
    provisioner "remote-exec" {
-        inline=["chmod +x /home/ec2-user/setupQAServer.sh","/home/ec2-user/setupQAServer.sh S3BUCKETNAME"]
+        inline=[
+		"cd /home/ec2-user", 
+		"sudo yum -y install git",
+		"sudo rm -rf ~/devopskata 2> /dev/null", 
+		"sudo git clone https://github.com/calphool/devopskata.git",
+		"cd /home/ec2-user/devopskata/qaserver",
+		"./setupQAServer.sh S3BUCKETNAME"]
+     
         connection {
             type = "ssh"
             user = "ec2-user"
@@ -291,19 +283,14 @@ resource "null_resource" "qasetup" {
 resource "null_resource" "prodsetup" {
    depends_on=["null_resource.pushkey_to_prod"]
 
-   provisioner "file" {
-       source="../prodserver/setupProdServer.sh"
-       destination="/home/ec2-user/setupProdServer.sh"
-        connection {
-            type = "ssh"
-            user = "ec2-user"
-            private_key="CONNECTIONKEYFILE"
-            host="${aws_instance.prodserver.public_dns}"
-        }
-   }
-
    provisioner "remote-exec" {
-        inline=["chmod +x /home/ec2-user/setupProdServer.sh","/home/ec2-user/setupProdServer.sh S3BUCKETNAME"]
+        inline=[
+		"cd /home/ec2-user", 
+		"sudo yum -y install git",
+		"sudo rm -rf ~/devopskata 2> /dev/null", 
+		"sudo git clone https://github.com/calphool/devopskata.git",
+		"cd /home/ec2-user/devopskata/prodserver",
+		"./setupProdServer.sh S3BUCKETNAME"]
         connection {
             type = "ssh"
             user = "ec2-user"
@@ -317,19 +304,15 @@ resource "null_resource" "prodsetup" {
 resource "null_resource" "buildsetup" {
    depends_on=["null_resource.pushkey_to_build"]
 
-   provisioner "file" {
-       source="../buildserver/setupBuildServer.sh"
-       destination="/home/ec2-user/setupBuildServer.sh"
-        connection {
-            type = "ssh"
-            user = "ec2-user"
-            private_key="CONNECTIONKEYFILE"
-            host="${aws_instance.buildserver.public_dns}"
-        }
-   }
 
    provisioner "remote-exec" {
-        inline=["chmod +x /home/ec2-user/setupBuildServer.sh","/home/ec2-user/setupBuildServer.sh S3BUCKETNAME"]
+        inline=[
+		"cd /home/ec2-user", 
+		"sudo yum -y install git",
+		"sudo rm -rf ~/devopskata 2> /dev/null", 
+		"sudo git clone https://github.com/calphool/devopskata.git",
+		"cd /home/ec2-user/devopskata/buildserver",
+		"./setupBuildServer.sh S3BUCKETNAME"]  
         connection {
             type = "ssh"
             user = "ec2-user"
@@ -338,8 +321,6 @@ resource "null_resource" "buildsetup" {
         }
     }
 }
-
-
 
 
 /*
