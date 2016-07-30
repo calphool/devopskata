@@ -1,7 +1,7 @@
 #!/bin/sh
 
 
-cd /home/ec2-user/devopskata/buildserver
+cd /home/ec2-user/devopskata/bootstrap/buildserver
 
 # $1=bucketname
 /home/ec2-user/devopskata/bootstrap/shared/setupAnyServer.sh buildserver $1
