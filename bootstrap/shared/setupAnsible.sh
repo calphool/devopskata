@@ -1,4 +1,7 @@
 cd ~
+
+
+
 sudo yum -y install python
 sudo yum -y install python-setuptools
 sudo yum -y install gcc

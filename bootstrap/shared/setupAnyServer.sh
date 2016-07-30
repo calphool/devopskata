@@ -18,6 +18,12 @@ chmod 600 .q
 # cleanup
 sudo rm /home/ec2-user/p
 
+# assure crudini is available
+sudo yum -y install crudini
+
+# update the repo settings to turn on optional (for xfvb)
+sudo crudini --set /etc/yum.repos.d/redhat-rhui.repo rhui-REGION-rhel-server-optional enabled 1
+
 # make sure wget exists
 sudo yum -y install wget
 
