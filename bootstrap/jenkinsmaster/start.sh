@@ -132,7 +132,7 @@ SECONDS=0
 
 # public RHEL7.2 ami=ami-0dd8f963
 customdomain=rounceville.com
-jenkinsami=ami-b26faad3
+jenkinsami=ami-4ba5612a
 buildserverami=ami-4d6aaf2c
 qaserverami=ami-7468ad15
 prodserverami=ami-7f6eab1e
