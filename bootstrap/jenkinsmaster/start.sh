@@ -130,10 +130,10 @@ fi
 SECONDS=0
 
 customdomain=rounceville.com
-jenkinsami=ami-a01ee4c1
-buildserverami=ami-c7f208a6
-qaserverami=ami-a2ff05c3
-prodserverami=ami-daff05bb
+jenkinsami=ami-0dd8f963
+buildserverami=ami-0dd8f963
+qaserverami=ami-0dd8f963
+prodserverami=ami-0dd8f963
 s3bucketname=calphoolbucket
 
 selfcidr=$(aws ec2 describe-vpcs --query "Vpcs[0].CidrBlock" --output text)

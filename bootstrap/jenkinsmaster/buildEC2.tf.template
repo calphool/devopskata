@@ -246,7 +246,7 @@ resource "null_resource" "jenkinssetup" {
 		"sudo yum -y install git",
 		"sudo rm -rf ~/devopskata 2> /dev/null", 
 		"sudo git clone https://github.com/calphool/devopskata.git",
-		"cd /home/ec2-user/devopskata/boostrap/jenkinsmaster",
+		"cd /home/ec2-user/devopskata/bootstrap/jenkinsmaster",
 		"./setupJenkinsMaster.sh S3BUCKETNAME"]
         connection {
             type = "ssh"
