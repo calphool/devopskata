@@ -246,7 +246,7 @@ resource "null_resource" "jenkinssetup" {
 		"sudo yum -y install git",
 		"sudo rm -rf ~/devopskata 2> /dev/null", 
 		"sudo git clone https://github.com/calphool/devopskata.git",
-		"cd /home/ec2-user/devopskata/jenkinsmaster",
+		"cd /home/ec2-user/devopskata/boostrap/jenkinsmaster",
 		"./setupJenkinsMaster.sh S3BUCKETNAME"]
         connection {
             type = "ssh"
@@ -267,7 +267,7 @@ resource "null_resource" "qasetup" {
 		"sudo yum -y install git",
 		"sudo rm -rf ~/devopskata 2> /dev/null", 
 		"sudo git clone https://github.com/calphool/devopskata.git",
-		"cd /home/ec2-user/devopskata/qaserver",
+		"cd /home/ec2-user/devopskata/bootstrap/qaserver",
 		"./setupQAServer.sh S3BUCKETNAME"]
      
         connection {
@@ -289,7 +289,7 @@ resource "null_resource" "prodsetup" {
 		"sudo yum -y install git",
 		"sudo rm -rf ~/devopskata 2> /dev/null", 
 		"sudo git clone https://github.com/calphool/devopskata.git",
-		"cd /home/ec2-user/devopskata/prodserver",
+		"cd /home/ec2-user/devopskata/bootstrap/prodserver",
 		"./setupProdServer.sh S3BUCKETNAME"]
         connection {
             type = "ssh"
@@ -311,7 +311,7 @@ resource "null_resource" "buildsetup" {
 		"sudo yum -y install git",
 		"sudo rm -rf ~/devopskata 2> /dev/null", 
 		"sudo git clone https://github.com/calphool/devopskata.git",
-		"cd /home/ec2-user/devopskata/buildserver",
+		"cd /home/ec2-user/devopskata/bootstrap/buildserver",
 		"./setupBuildServer.sh S3BUCKETNAME"]  
         connection {
             type = "ssh"
