@@ -242,7 +242,7 @@ resource "null_resource" "jenkinssetup" {
 
    provisioner "file" {
        source="setupJenkinsMaster.sh"
-       destination="/tmp/setupJenkinsMaster.sh"
+       destination="/home/ec2-user/setupJenkinsMaster.sh"
         connection {
             type = "ssh"
             user = "ec2-user"
@@ -252,7 +252,7 @@ resource "null_resource" "jenkinssetup" {
    }
 
    provisioner "remote-exec" {
-        inline= ["/tmp/setupJenkinsMaster.sh S3BUCKETNAME"]
+        inline= ["/home/ec2-user/setupJenkinsMaster.sh S3BUCKETNAME"]
         connection {
             type = "ssh"
             user = "ec2-user"
@@ -267,7 +267,7 @@ resource "null_resource" "qasetup" {
 
    provisioner "file" {
        source="../qaserver/setupQAServer.sh"
-       destination="/tmp/setupQAServer.sh"
+       destination="/home/ec2-user/setupQAServer.sh"
         connection {
             type = "ssh"
             user = "ec2-user"
@@ -277,7 +277,7 @@ resource "null_resource" "qasetup" {
    }
 
    provisioner "remote-exec" {
-        inline=["/tmp/setupQAServer.sh S3BUCKETNAME"]
+        inline=["/home/ec2-user/setupQAServer.sh S3BUCKETNAME"]
         connection {
             type = "ssh"
             user = "ec2-user"
@@ -293,7 +293,7 @@ resource "null_resource" "prodsetup" {
 
    provisioner "file" {
        source="../prodserver/setupProdServer.sh"
-       destination="/tmp/setupProdServer.sh"
+       destination="/home/ec2-user/setupProdServer.sh"
         connection {
             type = "ssh"
             user = "ec2-user"
@@ -303,7 +303,7 @@ resource "null_resource" "prodsetup" {
    }
 
    provisioner "remote-exec" {
-        inline=["/tmp/setupProdServer.sh S3BUCKETNAME"]
+        inline=["/home/ec2-user/setupProdServer.sh S3BUCKETNAME"]
         connection {
             type = "ssh"
             user = "ec2-user"
@@ -319,7 +319,7 @@ resource "null_resource" "buildsetup" {
 
    provisioner "file" {
        source="../buildserver/setupBuildServer.sh"
-       destination="/tmp/setupBuildServer.sh"
+       destination="/home/ec2-user/setupBuildServer.sh"
         connection {
             type = "ssh"
             user = "ec2-user"
@@ -329,7 +329,7 @@ resource "null_resource" "buildsetup" {
    }
 
    provisioner "remote-exec" {
-        inline=["/tmp/setupBuildServer.sh S3BUCKETNAME"]
+        inline=["/home/ec2-user/setupBuildServer.sh S3BUCKETNAME"]
         connection {
             type = "ssh"
             user = "ec2-user"
