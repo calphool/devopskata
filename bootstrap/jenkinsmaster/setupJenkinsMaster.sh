@@ -52,20 +52,17 @@ echo 'jenkins ALL=(ALL) NOPASSWD: ALL' | sudo tee --append /etc/sudoers
 
 $DIRECTORY="/home/ec2-user/s3/jenkins/jobs"
 if [ -d "$DIRECTORY" ]; then
-	cd /home/ec2-user/s3/jenkins/jobs
-	sudo cp -R -v . /var/lib/jenkins/jobs/
+	sudo cp -R -v /home/ec2-user/s3/jenkins/jobs /var/lib/jenkins/jobs/
 fi
 
 $DIRECTORY="/home/ec2-user/s3/jenkins/plugins"
 if [ -d "$DIRECTORY" ]; then
-	cd /home/ec2-user/s3/jenkins/plugins
-	sudo cp -R -v . /var/lib/jenkins/plugins
+	sudo cp -R -v /home/ec2-user/s3/jenkins/plugins /var/lib/jenkins/plugins
 fi
 
 $DIRECTORY="/home/ec2-user/s3/jenkins"
 if [ -d "$DIRECTORY" ]; then
-	cd /home/ec2-user/s3/jenkins
-	sudo cp -R -v . /var/lib/jenkins
+	sudo cp -R -v /home/ec2-user/s3/jenkins /var/lib/jenkins
 fi
 
 # make sure ownership is right for /var/lib/jenkins/jobs
@@ -77,3 +74,4 @@ sudo /etc/init.d/jenkins restart
 echo '----------------------------------------------------------------'
 echo " Software customization complete for: jenkinsmaster             "
 echo '----------------------------------------------------------------'
+
