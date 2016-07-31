@@ -57,6 +57,8 @@ sudo chown -hRv jenkins:jenkins /var/lib/jenkins
 # restart jenkins
 sudo /etc/init.d/jenkins restart
 
+cat /var/log/jenkins/config.xml
+
 echo '----------------------------------------------------------------'
 echo " Software customization complete for: jenkinsmaster             "
 echo '----------------------------------------------------------------'
