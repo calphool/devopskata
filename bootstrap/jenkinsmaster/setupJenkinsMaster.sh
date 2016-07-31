@@ -49,7 +49,7 @@ echo 'jenkins ALL=(ALL) NOPASSWD: ALL' | sudo tee --append /etc/sudoers
 
 
 # Pull data out of s3 for jenkins
-sudo rsync -avm --exclude="**/.ssh/**" --exclude="**/builds/**" /home/ec2-user/s3/jenkins /var/lib
+sudo rsync -avm --exclude="**/.ssh/**" --exclude="**/.gem/**" --exclude="**/builds/**" /home/ec2-user/s3/jenkins /var/lib
 
 # make sure ownership is right for /var/lib/jenkins/jobs
 sudo chown -hRv jenkins:jenkins /var/lib/jenkins
