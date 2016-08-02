@@ -74,7 +74,7 @@ resource "aws_security_group" "slave_securitygroup" {
   }
 }
 
-
+/*
 resource "aws_security_group" "db_securitygroup" {
   name = "db-securitygroup"
   description = "Allow 3306"
@@ -95,7 +95,7 @@ resource "aws_security_group" "db_securitygroup" {
       cidr_blocks = ["0.0.0.0/0"]
   }
 }
-
+*/
 
 
 /*
@@ -162,6 +162,7 @@ resource "null_resource" "nrgenkey" {
 }
 
 
+/*
 resource "aws_db_instance" "qadatabase" {
   allocated_storage    = 5
   engine               = "mariadb"
@@ -197,7 +198,7 @@ resource "aws_db_instance" "proddatabase" {
   apply_immediately    = "true"
   vpc_security_group_ids = ["${aws_security_group.db_securitygroup.id}"]
 }
-
+*/
 
 
 
@@ -467,14 +468,10 @@ resource "null_resource" "hosts_for_buildserver" {
         "cat /etc/hosts | sudo awk '!/prodserver/' > ~/hosts2 ; sudo mv ~/hosts2 /etc/hosts",
         "cat /etc/hosts | sudo awk '!/buildserver/' > ~/hosts2 ; sudo mv ~/hosts2 /etc/hosts",
         "cat /etc/hosts | sudo awk '!/jenkinsmaster/' > ~/hosts2 ; sudo mv ~/hosts2 /etc/hosts",
-        "cat /etc/hosts | sudo awk '!/qadb/' > ~/hosts2 ; sudo mv ~/hosts2 /etc/hosts",
-        "cat /etc/hosts | sudo awk '!/proddb/' > ~/hosts2 ; sudo mv ~/hosts2 /etc/hosts",
         "sudo -- sh -c \"echo ${aws_instance.qaserver.private_ip} qa.CUSTOMDOMAIN >> /etc/hosts\"",
         "sudo -- sh -c \"echo ${aws_instance.prodserver.private_ip} prod.CUSTOMDOMAIN >> /etc/hosts\"",
         "sudo -- sh -c \"echo ${aws_instance.buildserver.private_ip} build.CUSTOMDOMAIN >> /etc/hosts\"",
         "sudo -- sh -c \"echo ${aws_instance.jenkinsmaster.private_ip} jenkins.CUSTOMDOMAIN >> /etc/hosts\"",
-        "sudo -- sh -c \"echo ${aws_db_instance.qadatabase.address} qadb.CUSTOMDOMAIN >> /etc/hosts\"",
-        "sudo -- sh -c \"echo ${aws_db_instance.proddatabase.address} proddb.CUSTOMDOMAIN >> /etc/hosts\"",
         "sudo hostnamectl set-hostname build.CUSTOMDOMAIN"
         ]
         connection {
@@ -499,14 +496,10 @@ resource "null_resource" "hosts_for_jenkinsmaster" {
         "cat /etc/hosts | sudo awk '!/prodserver/' > ~/hosts2 ; sudo mv ~/hosts2 /etc/hosts",
         "cat /etc/hosts | sudo awk '!/buildserver/' > ~/hosts2 ; sudo mv ~/hosts2 /etc/hosts",
         "cat /etc/hosts | sudo awk '!/jenkinsmaster/' > ~/hosts2 ; sudo mv ~/hosts2 /etc/hosts",
-        "cat /etc/hosts | sudo awk '!/qadb/' > ~/hosts2 ; sudo mv ~/hosts2 /etc/hosts",
-        "cat /etc/hosts | sudo awk '!/proddb/' > ~/hosts2 ; sudo mv ~/hosts2 /etc/hosts",
         "sudo -- sh -c \"echo ${aws_instance.qaserver.private_ip} qa.CUSTOMDOMAIN >> /etc/hosts\"",
         "sudo -- sh -c \"echo ${aws_instance.prodserver.private_ip} prod.CUSTOMDOMAIN >> /etc/hosts\"",
         "sudo -- sh -c \"echo ${aws_instance.buildserver.private_ip} build.CUSTOMDOMAIN >> /etc/hosts\"",
         "sudo -- sh -c \"echo ${aws_instance.jenkinsmaster.private_ip} jenkins.CUSTOMDOMAIN >> /etc/hosts\"",
-        "sudo -- sh -c \"echo ${aws_db_instance.qadatabase.address} qadb.CUSTOMDOMAIN >> /etc/hosts\"",
-        "sudo -- sh -c \"echo ${aws_db_instance.proddatabase.address} proddb.CUSTOMDOMAIN >> /etc/hosts\"",
         "sudo hostnamectl set-hostname jenkins.CUSTOMDOMAIN"
         ]
         connection {
@@ -531,14 +524,10 @@ resource "null_resource" "hosts_for_qaserver" {
         "cat /etc/hosts | sudo awk '!/prodserver/' > ~/hosts2 ; sudo mv ~/hosts2 /etc/hosts",
         "cat /etc/hosts | sudo awk '!/buildserver/' > ~/hosts2 ; sudo mv ~/hosts2 /etc/hosts",
         "cat /etc/hosts | sudo awk '!/jenkinsmaster/' > ~/hosts2 ; sudo mv ~/hosts2 /etc/hosts",
-        "cat /etc/hosts | sudo awk '!/qadb/' > ~/hosts2 ; sudo mv ~/hosts2 /etc/hosts",
-        "cat /etc/hosts | sudo awk '!/proddb/' > ~/hosts2 ; sudo mv ~/hosts2 /etc/hosts",
         "sudo -- sh -c \"echo ${aws_instance.qaserver.private_ip} qa.CUSTOMDOMAIN >> /etc/hosts\"",
         "sudo -- sh -c \"echo ${aws_instance.prodserver.private_ip} prod.CUSTOMDOMAIN >> /etc/hosts\"",
         "sudo -- sh -c \"echo ${aws_instance.buildserver.private_ip} build.CUSTOMDOMAIN >> /etc/hosts\"",
         "sudo -- sh -c \"echo ${aws_instance.jenkinsmaster.private_ip} jenkins.CUSTOMDOMAIN >> /etc/hosts\"",
-        "sudo -- sh -c \"echo ${aws_db_instance.qadatabase.address} qadb.CUSTOMDOMAIN >> /etc/hosts\"",
-        "sudo -- sh -c \"echo ${aws_db_instance.proddatabase.address} proddb.CUSTOMDOMAIN >> /etc/hosts\"",
         "sudo hostnamectl set-hostname qa.CUSTOMDOMAIN" 
        ]
         connection {
@@ -561,14 +550,10 @@ resource "null_resource" "hosts_for_prodserver" {
         "cat /etc/hosts | sudo awk '!/prodserver/' > ~/hosts2 ; sudo mv ~/hosts2 /etc/hosts",
         "cat /etc/hosts | sudo awk '!/buildserver/' > ~/hosts2 ; sudo mv ~/hosts2 /etc/hosts",
         "cat /etc/hosts | sudo awk '!/jenkinsmaster/' > ~/hosts2 ; sudo mv ~/hosts2 /etc/hosts",
-        "cat /etc/hosts | sudo awk '!/qadb/' > ~/hosts2 ; sudo mv ~/hosts2 /etc/hosts",
-        "cat /etc/hosts | sudo awk '!/proddb/' > ~/hosts2 ; sudo mv ~/hosts2 /etc/hosts",
         "sudo -- sh -c \"echo ${aws_instance.qaserver.private_ip} qa.CUSTOMDOMAIN >> /etc/hosts\"",
         "sudo -- sh -c \"echo ${aws_instance.prodserver.private_ip} prod.CUSTOMDOMAIN >> /etc/hosts\"",
         "sudo -- sh -c \"echo ${aws_instance.buildserver.private_ip} build.CUSTOMDOMAIN >> /etc/hosts\"",
         "sudo -- sh -c \"echo ${aws_instance.jenkinsmaster.private_ip} jenkins.CUSTOMDOMAIN >> /etc/hosts\"",
-        "sudo -- sh -c \"echo ${aws_db_instance.qadatabase.address} qadb.CUSTOMDOMAIN >> /etc/hosts\"",
-        "sudo -- sh -c \"echo ${aws_db_instance.proddatabase.address} proddb.CUSTOMDOMAIN >> /etc/hosts\"",
         "sudo hostnamectl set-hostname prod.CUSTOMDOMAIN" 
        ]
         connection {
@@ -665,6 +650,7 @@ output "prodserver_public_ip" {
     value = "${aws_instance.prodserver.public_ip}"
 }
 
+/*
 output "qadb_address" { 
     value = "${aws_db_instance.qadatabase.address}"
 }
@@ -672,3 +658,4 @@ output "qadb_address" {
 output "proddb_address" {
     value = "${aws_db_instance.proddatabase.address}"   
 }
+*/
