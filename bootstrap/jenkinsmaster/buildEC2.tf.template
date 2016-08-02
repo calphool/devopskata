@@ -459,7 +459,7 @@ resource "null_resource" "nlr5_pushkey_to_github" {
 * update /etc/hosts on buildserver
 */
 resource "null_resource" "hosts_for_buildserver" {
-    depends_on=["aws_instance.buildserver", "aws_instance.qaserver", "aws_instance.jenkinsmaster", "aws_instance.prodserver", "aws_db_instance.qadatabase", "aws_db_instance.proddatabase"]
+    depends_on=["aws_instance.buildserver", "aws_instance.qaserver", "aws_instance.jenkinsmaster", "aws_instance.prodserver"]
 
     provisioner "remote-exec" {
         inline = [
@@ -487,7 +487,7 @@ resource "null_resource" "hosts_for_buildserver" {
 * update /etc/hosts on jenkinsmaster
 */
 resource "null_resource" "hosts_for_jenkinsmaster" {
-    depends_on=["aws_instance.buildserver", "aws_instance.qaserver", "aws_instance.jenkinsmaster", "aws_instance.prodserver", "aws_db_instance.qadatabase", "aws_db_instance.proddatabase"]
+    depends_on=["aws_instance.buildserver", "aws_instance.qaserver", "aws_instance.jenkinsmaster", "aws_instance.prodserver"]
 
     provisioner "remote-exec" {
         inline = [
@@ -515,7 +515,7 @@ resource "null_resource" "hosts_for_jenkinsmaster" {
 * update /etc/hosts on qaserver
 */
 resource "null_resource" "hosts_for_qaserver" {
-    depends_on=["aws_instance.buildserver", "aws_instance.qaserver", "aws_instance.jenkinsmaster", "aws_instance.prodserver", "aws_db_instance.qadatabase", "aws_db_instance.proddatabase"]
+    depends_on=["aws_instance.buildserver", "aws_instance.qaserver", "aws_instance.jenkinsmaster", "aws_instance.prodserver"]
 
     provisioner "remote-exec" {
         inline = [
@@ -541,7 +541,7 @@ resource "null_resource" "hosts_for_qaserver" {
 
 
 resource "null_resource" "hosts_for_prodserver" {
-    depends_on=["aws_instance.buildserver", "aws_instance.qaserver", "aws_instance.jenkinsmaster", "aws_instance.prodserver", "aws_db_instance.qadatabase", "aws_db_instance.proddatabase"]
+    depends_on=["aws_instance.buildserver", "aws_instance.qaserver", "aws_instance.jenkinsmaster", "aws_instance.prodserver"]
 
     provisioner "remote-exec" {
         inline = [
