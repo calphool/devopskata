@@ -165,7 +165,7 @@ resource "null_resource" "nrgenkey" {
 resource "aws_db_instance" "qadatabase" {
   allocated_storage    = 5
   engine               = "mariadb"
-  engine_version       = "10.24"
+  engine_version       = "10.1"
   instance_class       = "db.t2.micro"
   storage_type         = "standard"
   skip_final_snapshot  = "true"
@@ -173,17 +173,17 @@ resource "aws_db_instance" "qadatabase" {
   backup_retention_period = 0
   identifier           = "qadb"
   username             = "qauser"
-  password             = "qapwd"
-  multiaz              = "false"
+  password             = "qapassword"
+  multi_az             = "false"
   publicly_accessible  = "false"
-  apply_immediatly     = "true"
-  vpc_security_group_ids = ["${aws_security_group.db_securitygroup.name}"]
+  apply_immediately    = "true"
+  vpc_security_group_ids = ["${aws_security_group.db_securitygroup.id}"]
 }
 
 resource "aws_db_instance" "proddatabase" {
   allocated_storage    = 5
   engine               = "mariadb"
-  engine_version       = "10.24"
+  engine_version       = "10.1"
   instance_class       = "db.t2.micro"
   storage_type         = "standard"
   skip_final_snapshot  = "true"
@@ -191,11 +191,11 @@ resource "aws_db_instance" "proddatabase" {
   backup_retention_period = 0
   identifier           = "proddb"
   username             = "produser"
-  password             = "prodpwd"
-  multiaz              = "false"
+  password             = "prodpassword"
+  multi_az             = "false"
   publicly_accessible  = "false"
-  apply_immediatly     = "true"
-  vpc_security_group_ids = ["${aws_security_group.db_securitygroup.name}"]
+  apply_immediately    = "true"
+  vpc_security_group_ids = ["${aws_security_group.db_securitygroup.id}"]
 }
 
 
@@ -663,4 +663,12 @@ output "qaserver_public_ip" {
 
 output "prodserver_public_ip" {
     value = "${aws_instance.prodserver.public_ip}"
+}
+
+output "qadb_address" { 
+    value = "${aws_db_instance.qadatabase.address}"
+}
+
+output "proddb_address" {
+    value = "${aws_db_instance.proddatabase.address}"   
 }
