@@ -40,12 +40,13 @@ sudo yum install ImageMagick.x86_64 -y
 # install jenkins role
 sudo ansible-galaxy install geerlingguy.jenkins
 
-# run jenkins
-sudo ansible-playbook /home/ec2-user/devopskata/bootstrap/jenkinsmaster/startJenkins.yml
-
 # turn off requiretty (doesn't provide much security per various sources, and screws up jenkins)
 echo 'Defaults:jenkins !requiretty' | sudo tee --append /etc/sudoers
 echo 'jenkins ALL=(ALL) NOPASSWD: ALL' | sudo tee --append /etc/sudoers
+
+# run jenkins
+sudo ansible-playbook /home/ec2-user/devopskata/bootstrap/jenkinsmaster/startJenkins.yml
+sudo service jenkins stop
 
 # Pull data out of s3 for jenkins
 sudo rsync -avm --exclude="**/.ssh/**" --exclude="**/.gem/**" --exclude="**/builds/**" --exclude="**/workspace/**" /home/ec2-user/s3/jenkins /var/lib
@@ -54,9 +55,14 @@ sudo rsync -avm --exclude="**/.ssh/**" --exclude="**/.gem/**" --exclude="**/buil
 sudo chown -hRv jenkins:jenkins /var/lib/jenkins
 
 # restart jenkins
-sudo /etc/init.d/jenkins restart
+sudo service jenkins start
+
+a=$(cat /var/lib/jenkins/config.xml | grep 8081)
+
+if [[ -z $a ]]; then
+    echo '/var/lib/jenkins/config.xml does not appear to have port 8081 in it.  This will cause problems with slave instances.'
+fi
 
 echo '----------------------------------------------------------------'
 echo " Software customization complete for: jenkinsmaster             "
 echo '----------------------------------------------------------------'
-
