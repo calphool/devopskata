@@ -132,10 +132,10 @@ SECONDS=0
 
 # public RHEL7.2 ami=ami-0dd8f963
 customdomain=rounceville.com
-jenkinsami=ami-4ba5612a
-buildserverami=ami-4d6aaf2c
-qaserverami=ami-7468ad15
-prodserverami=ami-7f6eab1e
+jenkinsami=ami-90f433f1
+buildserverami=ami-e4f23585
+qaserverami=ami-e5f23584
+prodserverami=ami-06f23567
 s3bucketname=calphoolbucket
 
 selfcidr=$(aws ec2 describe-vpcs --query "Vpcs[0].CidrBlock" --output text)

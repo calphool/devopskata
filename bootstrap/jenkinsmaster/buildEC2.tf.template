@@ -74,8 +74,8 @@ resource "aws_security_group" "slave_securitygroup" {
   }
 }
 
-/*
-resource "aws_security_group" "db_securitygroup" {
+
+resource "aws_security_group" "db" {
   name = "db-securitygroup"
   description = "Allow 3306"
 
@@ -95,7 +95,7 @@ resource "aws_security_group" "db_securitygroup" {
       cidr_blocks = ["0.0.0.0/0"]
   }
 }
-*/
+
 
 
 /*
@@ -162,7 +162,7 @@ resource "null_resource" "nrgenkey" {
 }
 
 
-/*
+
 resource "aws_db_instance" "qadatabase" {
   allocated_storage    = 5
   engine               = "mariadb"
@@ -178,7 +178,7 @@ resource "aws_db_instance" "qadatabase" {
   multi_az             = "false"
   publicly_accessible  = "false"
   apply_immediately    = "true"
-  vpc_security_group_ids = ["${aws_security_group.db_securitygroup.id}"]
+  vpc_security_group_ids  = ["${aws_security_group.db.id}"]
 }
 
 resource "aws_db_instance" "proddatabase" {
@@ -196,9 +196,9 @@ resource "aws_db_instance" "proddatabase" {
   multi_az             = "false"
   publicly_accessible  = "false"
   apply_immediately    = "true"
-  vpc_security_group_ids = ["${aws_security_group.db_securitygroup.id}"]
+  vpc_security_group_ids  = ["${aws_security_group.db.id}"]
 }
-*/
+
 
 
 
@@ -650,7 +650,6 @@ output "prodserver_public_ip" {
     value = "${aws_instance.prodserver.public_ip}"
 }
 
-/*
 output "qadb_address" { 
     value = "${aws_db_instance.qadatabase.address}"
 }
@@ -658,4 +657,4 @@ output "qadb_address" {
 output "proddb_address" {
     value = "${aws_db_instance.proddatabase.address}"   
 }
-*/
+

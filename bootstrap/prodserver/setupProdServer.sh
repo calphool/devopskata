@@ -21,6 +21,15 @@ echo "Hello." > ~/index.html
 sudo chown root:tomcat ~/index.html
 sudo mv ~/index.html /var/lib/tomcat/webapps/hello
 
+# set up mariadb client
+echo '[mariadb]' | sudo tee /etc/yum.repos.d/MariaDB.repo
+echo 'name = MariaDB' | sudo tee --append /etc/yum.repos.d/MariaDB.repo
+echo 'baseurl = http://yum.mariadb.org/10.1/centos7-amd64' | sudo tee --append /etc/yum.repos.d/MariaDB.repo
+echo 'gpgkey=https://yum.mariadb.org/RPM-GPG-KEY-MariaDB' | sudo tee --append /etc/yum.repos.d/MariaDB.repo
+echo 'gpgcheck=1' | sudo tee --append /etc/yum.repos.d/MariaDB.repo
+
+sudo yum install MariaDB-client -y
+
 echo '----------------------------------------------------------------'
 echo " Software customization complete for: prodserver                "
 echo '----------------------------------------------------------------'
