@@ -184,6 +184,23 @@ resource "null_resource" "nrgenkey" {
 }
 
 
+variable "qauser" {
+  description = "qa database user"
+  default     = "qauser"
+}
+variable "produser" {
+  description = "prod database user"
+  default     = "produser"
+}
+variable "qapassword" {
+  description = "qa database pwd"
+  default     = "qapassword"
+}
+variable "prodpassword" {
+  description = "prod database pwd"
+  default     = "prodpassword"
+}
+
 
 resource "aws_db_instance" "qadatabase" {
   allocated_storage    = 5
@@ -195,8 +212,8 @@ resource "aws_db_instance" "qadatabase" {
   availability_zone    = "ap-northeast-1a"
   backup_retention_period = 0
   identifier           = "qadb"
-  username             = "qauser"
-  password             = "qapassword"
+  username             = "${var.qauser}"
+  password             = "${var.qapassword}"
   multi_az             = "false"
   publicly_accessible  = "false"
   apply_immediately    = "true"
@@ -213,8 +230,8 @@ resource "aws_db_instance" "proddatabase" {
   availability_zone    = "ap-northeast-1a"
   backup_retention_period = 0
   identifier           = "proddb"
-  username             = "produser"
-  password             = "prodpassword"
+  username             = "${var.produser}"
+  password             = "${var.prodpassword}"
   multi_az             = "false"
   publicly_accessible  = "false"
   apply_immediately    = "true"
@@ -231,11 +248,39 @@ resource "null_resource" "create_qa_db_endpoint_file" {
     provisioner "local-exec" {
         command="echo ${aws_db_instance.qadatabase.address} > qaaddress.txt"
     }
+    provisioner "local-exec" {
+        command="echo ${var.qauser} > qadbuser.txt"
+    }
+    provisioner "local-exec" {
+        command="echo ${var.qapassword} > qadbpassword.txt"
+    }
 }
 
 resource "null_resource" "push_dbname_to_qa" {
    depends_on=["null_resource.create_qa_db_endpoint_file"]
 
+   provisioner "file" {
+        source="qadbuser.txt"
+        destination="/home/ec2-user/dbuser.txt"
+
+        connection {
+            type = "ssh"
+            user = "ec2-user"
+            private_key="CONNECTIONKEYFILE"
+            host = "${aws_instance.qaserver.public_dns}"
+        }    
+   }
+   provisioner "file" {
+        source="qadbpassword.txt"
+        destination="/home/ec2-user/dbpassword.txt"
+
+        connection {
+            type = "ssh"
+            user = "ec2-user"
+            private_key="CONNECTIONKEYFILE"
+            host = "${aws_instance.qaserver.public_dns}"
+        }    
+   }
    provisioner "file" {
         source="qaendpoint.txt"
         destination="/home/ec2-user/dbendpoint.txt"
@@ -246,7 +291,7 @@ resource "null_resource" "push_dbname_to_qa" {
             private_key="CONNECTIONKEYFILE"
             host = "${aws_instance.qaserver.public_dns}"
         }    
-    }
+   }
    provisioner "file" {
         source="qaaddress.txt"
         destination="/home/ec2-user/dbaddress.txt"
@@ -257,7 +302,7 @@ resource "null_resource" "push_dbname_to_qa" {
             private_key="CONNECTIONKEYFILE"
             host = "${aws_instance.qaserver.public_dns}"
         }    
-    }
+   }
 }
 
 resource "null_resource" "cleanup_qa_db_endpoint_file" {
@@ -269,10 +314,13 @@ resource "null_resource" "cleanup_qa_db_endpoint_file" {
     provisioner "local-exec" {
         command="rm qaaddress.txt"
     }
+    provisioner "local-exec" {
+        command="rm qadbpassword.txt"
+    }
+    provisioner "local-exec" {
+        command="rm qadbuser.txt"
+    }
 }
-
-
-
 
 
 
@@ -285,11 +333,39 @@ resource "null_resource" "create_prod_db_endpoint_file" {
     provisioner "local-exec" {
         command="echo ${aws_db_instance.proddatabase.address} > prodaddress.txt"
     }
+    provisioner "local-exec" {
+        command="echo ${var.produser} > proddbuser.txt"
+    }
+    provisioner "local-exec" {
+        command="echo ${var.prodpassword} > proddbpassword.txt"
+    }
 }
 
 resource "null_resource" "push_dbname_to_prod" {
    depends_on=["null_resource.create_prod_db_endpoint_file"]
 
+   provisioner "file" {
+        source="proddbuser.txt"
+        destination="/home/ec2-user/dbuser.txt"
+
+        connection {
+            type = "ssh"
+            user = "ec2-user"
+            private_key="CONNECTIONKEYFILE"
+            host = "${aws_instance.prodserver.public_dns}"
+        }    
+   }
+   provisioner "file" {
+        source="proddbpassword.txt"
+        destination="/home/ec2-user/dbpassword.txt"
+
+        connection {
+            type = "ssh"
+            user = "ec2-user"
+            private_key="CONNECTIONKEYFILE"
+            host = "${aws_instance.prodserver.public_dns}"
+        }    
+   }
    provisioner "file" {
         source="prodendpoint.txt"
         destination="/home/ec2-user/dbendpoint.txt"
@@ -323,13 +399,13 @@ resource "null_resource" "cleanup_prod_db_endpoint_file" {
     provisioner "local-exec" {
         command="rm prodaddress.txt"
     }
+    provisioner "local-exec" {
+        command="rm proddbpassword.txt"
+    }
+    provisioner "local-exec" {
+        command="rm proddbuser.txt"
+    }
 }
-
-
-
-
-
-
 
 
 /*
