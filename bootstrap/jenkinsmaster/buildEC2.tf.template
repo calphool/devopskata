@@ -75,7 +75,29 @@ resource "aws_security_group" "slave_securitygroup" {
 }
 
 
-resource "aws_security_group" "db" {
+resource "aws_security_group" "db1" {
+  name = "db-securitygroup"
+  description = "Allow 3306"
+
+  ingress {
+      from_port = 3306
+      to_port = 3306
+      protocol = "TCP"
+      cidr_blocks = [
+      	"INGRESSBLOCK","SELFCIDRS"
+      ]
+  }
+
+  egress {
+      from_port = 0
+      to_port = 0
+      protocol = -1
+      cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+
+resource "aws_security_group" "db2" {
   name = "db-securitygroup"
   description = "Allow 3306"
 
@@ -178,7 +200,7 @@ resource "aws_db_instance" "qadatabase" {
   multi_az             = "false"
   publicly_accessible  = "false"
   apply_immediately    = "true"
-  vpc_security_group_ids  = ["${aws_security_group.db.id}"]
+  vpc_security_group_ids  = ["${aws_security_group.db1.id}"]
 }
 
 resource "aws_db_instance" "proddatabase" {
@@ -196,7 +218,7 @@ resource "aws_db_instance" "proddatabase" {
   multi_az             = "false"
   publicly_accessible  = "false"
   apply_immediately    = "true"
-  vpc_security_group_ids  = ["${aws_security_group.db.id}"]
+  vpc_security_group_ids  = ["${aws_security_group.db2.id}"]
 }
 
 
