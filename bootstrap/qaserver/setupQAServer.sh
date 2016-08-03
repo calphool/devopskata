@@ -29,7 +29,7 @@ echo 'baseurl = http://yum.mariadb.org/10.1/centos7-amd64' | sudo tee --append /
 echo 'gpgkey=https://yum.mariadb.org/RPM-GPG-KEY-MariaDB' | sudo tee --append /etc/yum.repos.d/MariaDB.repo
 echo 'gpgcheck=1' | sudo tee --append /etc/yum.repos.d/MariaDB.repo
 
-sudo yum install MariaDB-client y
+sudo yum install MariaDB-client -y
 
 echo '----------------------------------------------------------------'
 echo ' Software customization complete for: qaserver                  '
