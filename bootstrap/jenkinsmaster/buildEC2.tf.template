@@ -222,6 +222,72 @@ resource "aws_db_instance" "proddatabase" {
 }
 
 
+resource "null_resource" "create_qa_db_endpoint_file" {
+   depends_on=["aws_db_instance.qadatabase","aws_instance.qaserver"]
+
+    provisioner "local-exec" {
+        command="echo ${aws_db_instance.qadatabase.endpoint} > qadatabase.txt"
+    }
+}
+
+resource "null_resource" "push_dbname_to_qa" {
+   depends_on=["null_resource.create_qa_db_endpoint_file"]
+
+   provisioner "file" {
+        source="qadatabase.txt"
+        destination="/home/ec2-user/database.txt"
+
+        connection {
+            type = "ssh"
+            user = "ec2-user"
+            private_key="CONNECTIONKEYFILE"
+            host = "${aws_instance.qaserver.public_dns}"
+        }    
+    }
+}
+
+resource "null_resource" "cleanup_qa_db_endpoint_file" {
+   depends_on=["null_resource.push_dbname_to_qa"]
+
+    provisioner "local-exec" {
+        command="rm qadatabase.txt"
+    }
+}
+
+
+
+
+resource "null_resource" "create_prod_db_endpoint_file" {
+   depends_on=["aws_db_instance.proddatabase","aws_instance.prodserver"]
+
+    provisioner "local-exec" {
+        command="echo ${aws_db_instance.proddatabase.endpoint} > proddatabase.txt"
+    }
+}
+
+resource "null_resource" "push_dbname_to_prod" {
+   depends_on=["null_resource.create_prod_db_endpoint_file"]
+
+   provisioner "file" {
+        source="proddatabase.txt"
+        destination="/home/ec2-user/database.txt"
+
+        connection {
+            type = "ssh"
+            user = "ec2-user"
+            private_key="CONNECTIONKEYFILE"
+            host = "${aws_instance.qaserver.public_dns}"
+        }    
+    }
+}
+
+resource "null_resource" "cleanup_prod_db_endpoint_file" {
+   depends_on=["null_resource.push_dbname_to_prod"]
+
+    provisioner "local-exec" {
+        command="rm proddatabase.txt"
+    }
+}
 
 
 /*
