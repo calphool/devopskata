@@ -346,7 +346,6 @@ resource "null_resource" "jenkinssetup" {
 resource "null_resource" "qasetup" {
    depends_on=["null_resource.pushkey_to_qa"]
 
-
    provisioner "remote-exec" {
         inline=[
 		"cd /home/ec2-user", 

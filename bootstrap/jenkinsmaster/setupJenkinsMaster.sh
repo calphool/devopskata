@@ -47,16 +47,6 @@ sudo ansible-playbook /home/ec2-user/devopskata/bootstrap/jenkinsmaster/startJen
 echo 'Defaults:jenkins !requiretty' | sudo tee --append /etc/sudoers
 echo 'jenkins ALL=(ALL) NOPASSWD: ALL' | sudo tee --append /etc/sudoers
 
-
-# set up mariadb client
-echo '[mariadb]' | sudo tee /etc/yum.repos.d/MariaDB.repo
-echo 'name = MariaDB' | sudo tee --append /etc/yum.repos.d/MariaDB.repo
-echo 'baseurl = http://yum.mariadb.org/10.1/centos7-amd64' | sudo tee --append /etc/yum.repos.d/MariaDB.repo
-echo 'gpgkey=https://yum.mariadb.org/RPM-GPG-KEY-MariaDB' | sudo tee --append /etc/yum.repos.d/MariaDB.repo
-echo 'gpgcheck=1' | sudo tee --append /etc/yum.repos.d/MariaDB.repo
-
-sudo yum install MariaDB-client -y
-
 # Pull data out of s3 for jenkins
 sudo rsync -avm --exclude="**/.ssh/**" --exclude="**/.gem/**" --exclude="**/builds/**" --exclude="**/workspace/**" /home/ec2-user/s3/jenkins /var/lib
 
