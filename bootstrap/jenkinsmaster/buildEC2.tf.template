@@ -76,7 +76,7 @@ resource "aws_security_group" "slave_securitygroup" {
 
 
 resource "aws_security_group" "db1" {
-  name = "db-securitygroup"
+  name = "db-securitygroup1"
   description = "Allow 3306"
 
   ingress {
@@ -98,7 +98,7 @@ resource "aws_security_group" "db1" {
 
 
 resource "aws_security_group" "db2" {
-  name = "db-securitygroup"
+  name = "db-securitygroup2"
   description = "Allow 3306"
 
   ingress {
