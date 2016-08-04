@@ -53,10 +53,10 @@ sudo ansible-playbook /home/ec2-user/devopskata/bootstrap/jenkinsmaster/startJen
 sudo service jenkins stop
 
 # Pull data out of s3 for jenkins
-sudo rsync -avm --exclude="**/.ssh/**" --exclude="**/.gem/**" --exclude="**/builds/**" --exclude="**/workspace/**" /home/ec2-user/s3/jenkins/ /var/lib
+sudo rsync -avm --exclude="**/.ssh/**" --exclude="**/.gem/**" --exclude="**/builds/**" --exclude="**/workspace/**" /home/ec2-user/s3/jenkins /var/lib
 
 # make sure ownership is right for /var/lib/jenkins/jobs
-sudo chown -hRv jenkins:jenkins /var/lib/jenkins 2> /dev/null
+sudo chown -hR jenkins:jenkins /var/lib/jenkins 2> /dev/null
 
 # restart jenkins
 sudo service jenkins start
