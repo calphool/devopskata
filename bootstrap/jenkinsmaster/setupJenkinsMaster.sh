@@ -37,6 +37,10 @@ sudo yum install firefox.x86_64 -y
 # install imageMagick
 sudo yum install ImageMagick.x86_64 -y
 
+#make sure jenkins directories are clean
+sudo rm -rf /var/lib/jenkins/jobs 2> /dev/null
+sudo rm -rf /var/lib/jenkins/config.xml 2> /dev/null
+
 # install jenkins role
 sudo ansible-galaxy install geerlingguy.jenkins
 
@@ -49,18 +53,21 @@ sudo ansible-playbook /home/ec2-user/devopskata/bootstrap/jenkinsmaster/startJen
 sudo service jenkins stop
 
 # Pull data out of s3 for jenkins
-sudo rsync -avm --exclude="**/.ssh/**" --exclude="**/.gem/**" --exclude="**/builds/**" --exclude="**/workspace/**" /home/ec2-user/s3/jenkins /var/lib
+sudo rsync -avm --exclude="**/.ssh/**" --exclude="**/.gem/**" --exclude="**/builds/**" --exclude="**/workspace/**" /home/ec2-user/s3/jenkins/ /var/lib
 
 # make sure ownership is right for /var/lib/jenkins/jobs
-sudo chown -hRv jenkins:jenkins /var/lib/jenkins
+sudo chown -hRv jenkins:jenkins /var/lib/jenkins 2> /dev/null
 
 # restart jenkins
 sudo service jenkins start
+sleep 20
 
 a=$(cat /var/lib/jenkins/config.xml | grep 8081)
 
 if [[ -z $a ]]; then
     echo '/var/lib/jenkins/config.xml does not appear to have port 8081 in it.  This will cause problems with slave instances.'
+else
+    echo '/var/lib/jenkins/config.xml appears to be okay'
 fi
 
 echo '----------------------------------------------------------------'
